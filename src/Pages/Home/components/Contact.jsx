@@ -7,10 +7,10 @@ const Contact = () => {
         <div className='my-12'>
             <SectionTitle headingColor={"Contact"} headingExtend={"Us"} />
             <div className='max-w-4xl mx-auto my-10 flex gap-6 flex-col md:flex-row items-center'>
-                <div className='flex-1 flex justify-center items-center'>
+                <div className='flex-1 flex justify-center items-center' data-aos="fade-right" data-aos-duration="1000">
                     <img src={contactPhoto} alt="" className='max-w-[350px]' />
                 </div>
-                <div className='flex-1'>
+                <div className='md:flex-1' data-aos="fade-left" data-aos-duration="1000">
                     <form className='flex flex-col gap-2 w-full'>
                         <div className='flex flex-col gap-1'>
                             <label className='label'>Name</label>

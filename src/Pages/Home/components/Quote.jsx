@@ -10,7 +10,7 @@ const Quote = () => {
                 <div className='flex-1' data-aos="fade-right" data-aos-duration="1000">
                     <img src={zakirHussain} alt="" className='w-[500px] h-[500px] object-cover rounded-tl-4xl rounded-br-4xl' />
                 </div>
-                <div className='flex-1' data-aos="fade-zoom-in"
+                <div className='flex-1 p-4' data-aos="fade-zoom-in"
                     data-aos-easing="ease-in-back"
                     data-aos-delay="300"
                     data-aos-offset="0" data-aos-duration="1000">
