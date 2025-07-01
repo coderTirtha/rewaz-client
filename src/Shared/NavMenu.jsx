@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import logo from '/images/logo.png';
 import { IoHome, IoMenu } from 'react-icons/io5';
 import { BiDonateHeart } from 'react-icons/bi';
@@ -32,7 +32,7 @@ const NavMenu = () => {
                             </ul>
                         </div>
                         <div className='flex gap-2 lg:gap-4'>
-                            <button className='btn btn-sm lg:btn-md bg-[#E97451] text-white'>Login</button>
+                            <Link to={'/login'}><button className='btn btn-sm lg:btn-md bg-[#E97451] text-white'>Login</button></Link>
                             <button className='btn btn-sm lg:btn-md btn-outline border-[#1C1C1C] text-[#1C1C1C] hover:bg-[#1C1C1C] hover:border-[#1C1C1C] hover:text-white'>Sign Up</button>
                         </div>
                     </div>

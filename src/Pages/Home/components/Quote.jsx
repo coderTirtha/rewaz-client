@@ -6,9 +6,9 @@ import { BiSolidQuoteLeft } from 'react-icons/bi';
 const Quote = () => {
     return (
         <div style={{ backgroundImage: `url(${quoteBg})` }} className='bg-cover max-w-screen bg-center bg-no-repeat py-10 bg-blend-overlay'>
-            <div className='max-w-4xl mx-auto flex flex-col md:flex-row gap-6 items-center'>
+            <div className='max-w-4xl mx-auto flex flex-col-reverse md:flex-row gap-6 items-center'>
                 <div className='flex-1' data-aos="fade-right" data-aos-duration="1000">
-                    <img src={zakirHussain} alt="" className='w-[500px] h-[500px] object-cover rounded-tl-4xl rounded-br-4xl' />
+                    <img src={zakirHussain} alt="" className='max-w-[300px] h-[300px] lg:max-w-[500px] lg:h-[500px] object-cover rounded-tl-4xl rounded-br-4xl' />
                 </div>
                 <div className='flex-1 p-4' data-aos="fade-zoom-in"
                     data-aos-easing="ease-in-back"
