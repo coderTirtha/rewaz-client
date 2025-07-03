@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Login = () => {
     return (
-        <div className='my-12 max-w-xl mx-auto'>
+        <div className='my-12 min-w-md mx-auto border-2 border-gray-200 p-6 rounded'>
             <title>Login | Rewaz</title>
             <div className='flex justify-center items-center'>
                 <img src={logo} alt="" className='w-[150px]' />
@@ -14,7 +14,7 @@ const Login = () => {
                     <h1 className='text-4xl font-bold uppercase'>Login</h1>
                 </div>
                 <div className='flex justify-center items-center my-6'>
-                    <div className='w-full'>
+                    <div className='max-w-md'>
                         <form className="space-y-2">
                             <label className="label">Email</label>
                             <input type="email" className="input validator w-full" placeholder="Email" required />

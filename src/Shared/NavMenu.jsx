@@ -33,7 +33,7 @@ const NavMenu = () => {
                         </div>
                         <div className='flex gap-2 lg:gap-4'>
                             <Link to={'/login'}><button className='btn btn-sm lg:btn-md bg-[#E97451] text-white'>Login</button></Link>
-                            <button className='btn btn-sm lg:btn-md btn-outline border-[#1C1C1C] text-[#1C1C1C] hover:bg-[#1C1C1C] hover:border-[#1C1C1C] hover:text-white'>Sign Up</button>
+                            <Link to={'/signup'}><button className='btn btn-sm lg:btn-md btn-outline border-[#1C1C1C] text-[#1C1C1C] hover:bg-[#1C1C1C] hover:border-[#1C1C1C] hover:text-white'>Sign Up</button></Link>
                         </div>
                     </div>
                     {/* Page content here */}
