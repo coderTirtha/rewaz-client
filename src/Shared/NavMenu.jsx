@@ -1,13 +1,20 @@
 import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import logo from '/images/logo.png';
+import userAvatar from '/images/user.png';
 import { IoHome, IoMenu } from 'react-icons/io5';
 import { BiDonateHeart } from 'react-icons/bi';
+import { FaBlog } from 'react-icons/fa';
+import { SlBadge } from 'react-icons/sl';
+import useAuth from '../hooks/useAuth';
 
 const NavMenu = () => {
+    const { user } = useAuth();
     const menuItems = <>
         <li><NavLink to={'/'}><IoHome />Home</NavLink></li>
         <li><NavLink to={'/donate'}><BiDonateHeart />Donation</NavLink></li>
+        <li><NavLink to={'/blog'}><FaBlog />Blog</NavLink></li>
+        <li><NavLink to={'/membership'}><SlBadge />Membership</NavLink></li>
     </>
     return (
         <div>
@@ -32,8 +39,21 @@ const NavMenu = () => {
                             </ul>
                         </div>
                         <div className='flex gap-2 lg:gap-4'>
-                            <Link to={'/login'}><button className='btn btn-sm lg:btn-md bg-[#E97451] text-white'>Login</button></Link>
-                            <Link to={'/signup'}><button className='btn btn-sm lg:btn-md btn-outline border-[#1C1C1C] text-[#1C1C1C] hover:bg-[#1C1C1C] hover:border-[#1C1C1C] hover:text-white'>Sign Up</button></Link>
+                            {
+                                user ? <>
+                                    <div className="avatar">
+                                        <Link to={`/profile/${user?.uid}`}>
+                                            <div className="w-10 rounded-full">
+                                                <img src={userAvatar} />
+                                            </div>
+                                        </Link>
+                                    </div>
+                                </> :
+                                    <>
+                                        <Link to={'/login'}><button className='btn btn-sm lg:btn-md bg-[#E97451] text-white'>Login</button></Link>
+                                        <Link to={'/signup'}><button className='btn btn-sm lg:btn-md btn-outline border-[#1C1C1C] text-[#1C1C1C] hover:bg-[#1C1C1C] hover:border-[#1C1C1C] hover:text-white'>Sign Up</button></Link>
+                                    </>
+                            }
                         </div>
                     </div>
                     {/* Page content here */}
