@@ -41,13 +41,13 @@ const NavMenu = () => {
                         <div className='flex gap-2 lg:gap-4'>
                             {
                                 user ? <>
-                                    <div className="avatar">
-                                        <Link to={`/profile/${user?.uid}`}>
+                                    <Link to={`/profile/${user?.uid}`}>
+                                        <div className="avatar">
                                             <div className="w-10 rounded-full">
-                                                <img src={userAvatar} />
+                                                <img src={user?.photoURL ? user?.photoURL : userAvatar} className='max-w-[100px]' />
                                             </div>
-                                        </Link>
-                                    </div>
+                                        </div>
+                                    </Link>
                                 </> :
                                     <>
                                         <Link to={'/login'}><button className='btn btn-sm lg:btn-md bg-[#E97451] text-white'>Login</button></Link>

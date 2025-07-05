@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '/images/logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
@@ -8,11 +8,16 @@ import { toast, ToastContainer } from 'react-toastify';
 const Login = () => {
     const { login } = useAuth();
     const { register, handleSubmit, reset } = useForm();
+    const location = useLocation();
+    const navigate = useNavigate();
     const onSubmit = (data) => [
         login(data?.email, data?.password)
         .then(res => {
             toast.success('Logged in Successfully!');
             reset();
+            setTimeout(() => {
+                navigate(location?.state || '/')
+            }, 2000);
         })
         .catch(err => {
             toast.error(err.message);
