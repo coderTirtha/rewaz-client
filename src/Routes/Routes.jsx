@@ -7,6 +7,11 @@ import SignUp from "../Pages/SignUp/SignUp";
 import Blog from "../Pages/Blog/Blog";
 import PrivateRoute from "./PrivateRoute";
 import Profile from "../Pages/Profile/Profile";
+import Membership from "../Pages/Membership/Membership";
+import AdminRoute from "./AdminRoute";
+import Dashboard from "../Layouts/Dashboard";
+import Overview from "../Pages/Dashboard_Overview/Overview";
+import PendingMembers from "../Pages/Dashboard_PendingMembers/PendingMembers";
 
 const routes = createBrowserRouter([
     {
@@ -33,6 +38,28 @@ const routes = createBrowserRouter([
             {
                 path: '/profile/:uid',
                 element: <PrivateRoute><Profile /></PrivateRoute>
+            },
+            {
+                path: '/membership-form',
+                element: <PrivateRoute><Membership /></PrivateRoute>
+            }
+        ]
+    },
+    {
+        path: '/dashboard',
+        element: <AdminRoute><Dashboard /></AdminRoute>,
+        children: [
+            {
+                index: true,
+                element: <AdminRoute><Overview /></AdminRoute>
+            },
+            {
+                path: 'overview',
+                element: <AdminRoute><Overview /></AdminRoute>
+            },
+            {
+                path: '/dashboard/pending-members',
+                element: <AdminRoute><PendingMembers /></AdminRoute>
             }
         ]
     }

@@ -11,25 +11,28 @@ import Swal from 'sweetalert2';
 
 const Profile = () => {
     const { uid } = useParams();
-    const [photo, setPhoto] = useState(null);
-    const [editStatus, setEditStatus] = useState(false);
-    const { register, handleSubmit } = useForm();
-    const axiosSecure = useAxiosSecure();
-    const { user, updateUser, logOut } = useAuth();
+    const [photo, setPhoto] = useState(null); // State to hold the photo file
+    const [editStatus, setEditStatus] = useState(false); // State to manage edit mode
+    const { register, handleSubmit } = useForm(); // Initialize react-hook-form
+    const axiosSecure = useAxiosSecure(); // Custom hook for secure axios instance
+    const { user, updateUser, logOut } = useAuth(); // Custom hook for authentication
     const { data: userProfile, isLoading, refetch } = useQuery({
         queryKey: ["user"],
         queryFn: async () => {
             const res = await axiosSecure.get(`/user/${uid}`);
             return res.data;
         },
-    });
+    }); // Fetch user profile data using react-query
+    //Edit profile button handler
     const handleEdit = () => {
         setEditStatus(true);
         toast('You can now edit your credentials!');
     }
+    //Function to optimize photo URL
     const optimizePhoto = (url) => {
         return url.replace('/upload/', '/upload/f_auto,q_auto,c_fill,g_auto/');
     }
+    //Form submit handler
     const onSubmit = async (data) => {
         const updatedProfile = {
             name: data?.name,
@@ -49,10 +52,12 @@ const Profile = () => {
             toast.error(error?.message);
         }
     }
+    //Handle photo change
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         setPhoto(file);
     }
+    //Handle image upload
     const handleImageUpload = async (e) => {
         e.preventDefault();
         if (!photo) {
@@ -87,6 +92,8 @@ const Profile = () => {
             return;
         }
     }
+    //Handle log out
+    //Using SweetAlert2 for confirmation dialog
     const handleLogOut = () => [
         Swal.fire({
             title: "Are you sure to logout?",
@@ -109,6 +116,7 @@ const Profile = () => {
             }
         })
     ]
+
     return (
         <div>
             <title>{`Profile - Rewaz | ${userProfile?.name}`}</title>
