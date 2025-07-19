@@ -10,20 +10,25 @@ const axiosSecure = axios.create({
 const useAxiosSecure = () => {
     const { logOut } = useContext(AuthContext);
     useEffect(() => {
-        axiosSecure.interceptors.response.use(res => {
-            return res;
-        }, err => {
-            if (err.response.status === 401 || err.response.status === 403) {
-                logOut()
-                    .then(res => {
-                        console.log(res.user);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    })
+        const interceptor = axiosSecure.interceptors.response.use(
+            res => res,
+            err => {
+                if (err?.response?.status === 401 || err?.response?.status === 403) {
+                    logOut()
+                        .then(() => {
+                            console.log("User logged out due to unauthorized access.");
+                        })
+                        .catch(console.error);
+                }
+                return Promise.reject(err);
             }
-        })
-    }, [])
+        );
+
+        return () => {
+            axiosSecure.interceptors.response.eject(interceptor);
+        };
+    }, []);
+
     return axiosSecure;
 }
 

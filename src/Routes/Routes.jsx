@@ -12,6 +12,7 @@ import AdminRoute from "./AdminRoute";
 import Dashboard from "../Layouts/Dashboard";
 import Overview from "../Pages/Dashboard_Overview/Overview";
 import PendingMembers from "../Pages/Dashboard_PendingMembers/PendingMembers";
+import ManageUsers from "../Pages/Dashboard_ManageUsers/ManageUsers";
 
 const routes = createBrowserRouter([
     {
@@ -56,6 +57,10 @@ const routes = createBrowserRouter([
             {
                 path: 'overview',
                 element: <AdminRoute><Overview /></AdminRoute>
+            },
+            {
+                path: '/dashboard/manage-users',
+                element: <AdminRoute><ManageUsers /></AdminRoute>
             },
             {
                 path: '/dashboard/pending-members',
