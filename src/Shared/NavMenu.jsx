@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import logo from '/images/logo.png';
 import userAvatar from '/images/user.png';
@@ -14,6 +14,16 @@ import loader from '/images/loading.svg';
 const NavMenu = () => {
     const { user, loading } = useAuth();
     const { isAdmin, isAdminLoading } = useAdmin();
+    const [scrolled, setScrolled] = useState();
+    useEffect(() => {
+        const handleScroll = () => {
+            const isScrolled = window.scrollY > 10;
+            setScrolled(isScrolled);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
     const menuItems = <>
         <li><NavLink to={'/'}><IoHome />Home</NavLink></li>
         <li><NavLink to={'/donate'}><BiDonateHeart />Donation</NavLink></li>
@@ -40,7 +50,7 @@ const NavMenu = () => {
                         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
                         <div className="drawer-content flex flex-col">
                             {/* Navbar */}
-                            <div className="navbar bg-base-200 w-full">
+                            <div className={`navbar bg-base-200 w-full fixed top-0 left-0 right-0 z-10 transition-all duration-300 ${scrolled ? "bg-white/80 text-black backdrop-blur-lg shadow-lg" : "bg-black/50 text-white backdrop-blur-sm"}`}>
                                 <div className="flex-none lg:hidden">
                                     <label htmlFor="my-drawer-3" aria-label="open sidebar" className="btn btn-square btn-ghost">
                                         <IoMenu className='text-xl' />
@@ -77,7 +87,7 @@ const NavMenu = () => {
                             {/* Page content here */}
                             <Outlet />
                         </div>
-                        <div className="drawer-side">
+                        <div className="drawer-side fixed top-0 left-0 z-[100]">
                             <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay"></label>
                             <ul className="menu bg-base-200 min-h-full w-72 p-4 flex flex-col justify-between">
                                 {/* Sidebar content here */}
@@ -86,7 +96,7 @@ const NavMenu = () => {
                                     <h1 className='text-xl font-semibold'>Rewaz</h1>
                                     <p className='px-2 text-justify'>A renowned Tabla learning school conducted by Pandit Sudip Sen Gupta from Chittagong, Bangladesh</p>
                                 </div>
-                                <div>
+                                <div className='flex-grow'>
                                     {menuItems}
                                 </div>
                                 <div>

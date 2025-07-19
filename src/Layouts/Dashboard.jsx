@@ -33,9 +33,9 @@ const Dashboard = () => {
                 </div>
                 <div className="drawer-side">
                     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                    <ul className="menu bg-[#707070] text-white min-h-full w-80 p-4 flex flex-col justify-around gap-y-10">
+                    <ul className="menu bg-[#707070] text-white min-h-full w-64 p-4 flex flex-col justify-around gap-y-10">
                         <div className='flex flex-col items-center justify-center space-y-4'>
-                            <img src={logo} alt="" className='max-w-[200px]' />
+                            <img src={logo} alt="" className='max-w-[150px]' />
                             <h2 className='text-xl font-bold uppercase'>Admin Dashboard</h2>
                         </div>
                         {/* Sidebar content here */}
