@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PendingMembers = () => {
+const Manage_Students = () => {
     return (
         <div>
             
@@ -8,4 +8,4 @@ const PendingMembers = () => {
     );
 };
 
-export default PendingMembers;
+export default Manage_Students;

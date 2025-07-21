@@ -11,8 +11,9 @@ import Membership from "../Pages/Membership/Membership";
 import AdminRoute from "./AdminRoute";
 import Dashboard from "../Layouts/Dashboard";
 import Overview from "../Pages/Dashboard_Overview/Overview";
-import PendingMembers from "../Pages/Dashboard_PendingMembers/PendingMembers";
 import ManageUsers from "../Pages/Dashboard_ManageUsers/ManageUsers";
+import ManageMembers from "../Pages/Dashboard_ManageMembers/ManageMembers";
+import Donation from "../Pages/Donation/Donation";
 
 const routes = createBrowserRouter([
     {
@@ -33,6 +34,10 @@ const routes = createBrowserRouter([
                 element: <SignUp />
             },
             {
+                path: '/donate',
+                element: <PrivateRoute><Donation /></PrivateRoute>
+            },
+            {
                 path: '/blog',
                 element: <PrivateRoute><Blog /></PrivateRoute>
             },
@@ -41,7 +46,7 @@ const routes = createBrowserRouter([
                 element: <PrivateRoute><Profile /></PrivateRoute>
             },
             {
-                path: '/membership-form',
+                path: '/membership',
                 element: <PrivateRoute><Membership /></PrivateRoute>
             }
         ]
@@ -63,8 +68,12 @@ const routes = createBrowserRouter([
                 element: <AdminRoute><ManageUsers /></AdminRoute>
             },
             {
-                path: '/dashboard/pending-members',
-                element: <AdminRoute><PendingMembers /></AdminRoute>
+                path: '/dashboard/manage-members',
+                element: <AdminRoute><ManageMembers /></AdminRoute>
+            },
+            {
+                path: '/dashboard/manage-students',
+                element: <AdminRoute></AdminRoute>
             }
         ]
     }

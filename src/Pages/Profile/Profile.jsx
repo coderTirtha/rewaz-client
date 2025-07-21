@@ -118,9 +118,12 @@ const Profile = () => {
     ]
 
     return (
-        <div>
+        <div className='my-20'>
             <title>{`Profile - Rewaz | ${userProfile?.name}`}</title>
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-2xl mx-auto my-12'>
+            <div className='my-8'>
+                <h1 className='text-3xl font-bold text-center'>Profile - {user?.displayName}</h1>
+            </div>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-2xl mx-auto'>
                 <div className='rounded-md shadow-md p-4'>
                     <div>
                         <form onSubmit={handleImageUpload} className='flex justify-center items-center gap-2'>

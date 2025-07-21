@@ -2,7 +2,6 @@ import React from 'react';
 import bannerImage from '/images/banner.jpg';
 import logo from '/images/logo.png';
 import { FaArrowRightLong } from 'react-icons/fa6';
-import { Typewriter } from 'react-simple-typewriter';
 
 const Banner = () => {
     return (

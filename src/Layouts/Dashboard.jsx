@@ -14,10 +14,9 @@ const Dashboard = () => {
     const dashboardItems = <>
         <li><NavLink to="/dashboard/overview"><GrOverview />Overview</NavLink></li>
         <li><NavLink to="/dashboard/manage-users"><FaUsersGear />Manage Users</NavLink></li>
-        <li><NavLink to="/dashboard/all-members"><MdCardMembership />All Members</NavLink></li>
-        <li><NavLink to="/dashboard/pending-members"><RiPassPendingFill />Pending Members</NavLink></li>
-        <li><NavLink to="/dashboard/all-students"><PiStudent />All Students</NavLink></li>
-        <li><NavLink to="/dashboard/pending-blogs"><MdOutlinePendingActions />Pending Blogs</NavLink></li>
+        <li><NavLink to="/dashboard/manage-members"><MdCardMembership />Manage Members</NavLink></li>
+        <li><NavLink to="/dashboard/manage-students"><PiStudent />Manage Students</NavLink></li>
+        <li><NavLink to="/dashboard/manage-blogs"><MdOutlinePendingActions />Manage Blogs</NavLink></li>
         <li><NavLink to="/dashboard/donation-logs"><LuLogs />Donation Logs</NavLink></li>
     </>
     return (

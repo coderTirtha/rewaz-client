@@ -28,7 +28,7 @@ const NavMenu = () => {
         <li><NavLink to={'/'}><IoHome />Home</NavLink></li>
         <li><NavLink to={'/donate'}><BiDonateHeart />Donation</NavLink></li>
         <li><NavLink to={'/blog'}><FaBlog />Blog</NavLink></li>
-        <li><NavLink to={'/membership-form'}><SlBadge />Membership</NavLink></li>
+        <li><NavLink to={'/membership'}><SlBadge />Membership</NavLink></li>
         {
             loading || isAdminLoading ? <><div className='min-h-screen flex flex-col justify-center items-center'>
                 <img src={loader} alt="" />
