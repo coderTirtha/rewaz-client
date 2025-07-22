@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TopSection from './components/TopSection';
 import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Membership = () => {
+    const [disableStatus, setDisableStatus] = useState(false);
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
     const { data: databaseUser } = useQuery({
@@ -16,9 +18,67 @@ const Membership = () => {
             return result?.data;
         }
     });
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const onSubmit = data => {
-        console.log(data);
+    const { register, handleSubmit, reset } = useForm();
+
+    const handleImageChange = e => {
+        const photo = e.target.files[0];
+        // console.log(photo);
+        const maxSize = 5 * 1024 * 1024;
+
+        if (photo) {
+            if (photo.size > maxSize) {
+                toast.warn("Photo is larger than 5 MB. Please select another one!", {
+                    autoClose: 3000,
+                    position: 'bottom-right'
+                });
+                e.target.value = null;
+                return;
+            }
+        }
+    }
+
+    const onSubmit = async (data) => {
+        setDisableStatus(true);
+        // console.log(data);
+        const photoData = data?.photo[0];
+        // console.log(photoData);
+        const formData = new FormData();
+        formData.append('photo', photoData);
+        if (photoData) {
+            try {
+                const result = await axiosSecure.post('/upload/members', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                if (result?.data?.url) {
+                    const newMember = {
+                        name: data?.firstName + " " + data?.lastName,
+                        email: data?.email,
+                        phone: databaseUser?.phone,
+                        identificationMethod: data?.identificationMethod,
+                        identificationNumber: data?.identificationNumber,
+                        dateOfBirth: data?.dateOfBirth,
+                        occupation: data?.occupation,
+                        nationality: data?.nationality,
+                        photo: result?.data?.url,
+                        membershipStatus: "pending"
+                    }
+                    const response = await axiosSecure.post('/members', newMember, { withCredentials: true });
+                    // console.log(response);
+                    if (response?.data?.insertedId) {
+                        toast.success('Congratulations for filling up the membership form successfully! You will receive a mail/phone call after the approval of our authority within 24 hours!', {
+                            autoClose: 5000,
+                        });
+                        reset();
+                        setDisableStatus(false);
+                    }
+                }
+            }
+            catch {
+
+            }
+        }
     }
     return (
         <div>
@@ -31,11 +91,11 @@ const Membership = () => {
                     <div className='flex flex-col md:flex-row gap-4'>
                         <div className='fieldset flex-1 w-full'>
                             <label className='label'>First Name <span className='font-bangla'>(নামের প্রথম অংশ)</span></label>
-                            <input {...register('firstName', { required: true })} type="text" className='input w-full' placeholder='First Name' required />
+                            <input {...register('firstName', { required: true })} type="text" className='input w-full' placeholder='First Name' required disabled={disableStatus} />
                         </div>
                         <div className='fieldset flex-1 w-full'>
                             <label className='label'>Last Name/Surname <span className='font-bangla'>(নামের শেষ অংশ)</span></label>
-                            <input {...register('lastName', { required: true })} type="text" className='input w-full' placeholder='Last Name/Surname' required />
+                            <input {...register('lastName', { required: true })} type="text" className='input w-full' placeholder='Last Name/Surname' required disabled={disableStatus} />
                         </div>
                     </div>
                     <div className='fieldset w-full'>
@@ -45,17 +105,17 @@ const Membership = () => {
                     </div>
                     <div className='fieldset w-full'>
                         <label className="label">Phone</label>
-                        <input {...register('phone')} type="number" className='input w-full text-gray-400' value={databaseUser?.phone} readOnly />
+                        <input {...register('phone')} type="text" className='input w-full text-gray-400' value={databaseUser?.phone} readOnly />
                         <h6 className='text-xs text-gray-500 italic'>** Contact Number can't be changed! <span className='font-bangla'>(ফোন নম্বর পরিবর্তনযোগ্য নয়!)</span></h6>
                     </div>
                     <div className='fieldset w-full'>
                         <label className="label">NID / Birth Registration No. <span className='font-bangla'>(জাতীয় পরিচয়পত্র / জন্মসনদ নং.)</span></label>
                         <div className='flex gap-2'>
-                            <select {...register('identificationMethod')} className="select flex-1/4">
+                            <select {...register('identificationMethod')} className="select flex-1/4" disabled={disableStatus}>
                                 <option>NID</option>
                                 <option>Birth Registration</option>
                             </select>
-                            <input {...register('identificationNumber')} type="text" className='input w-full' placeholder='Enter your NID / Birth Registration no.' />
+                            <input {...register('identificationNumber')} type="text" className='input w-full' placeholder='Enter your NID / Birth Registration no.' required disabled={disableStatus} />
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row gap-4">
@@ -65,7 +125,7 @@ const Membership = () => {
                         </div>
                         <div className='fieldset w-full'>
                             <label className="label">Occupation <span className='font-bangla'>(পেশা)</span></label>
-                            <select {...register('occupation')} defaultValue="আপনার পেশা নির্বাচন করুন" className="select font-bangla w-full">
+                            <select {...register('occupation')} defaultValue="আপনার পেশা নির্বাচন করুন" className="select font-bangla w-full" required disabled={disableStatus}>
                                 <option disabled>আপনার পেশা নির্বাচন করুন</option>
                                 <option>ডাক্তার</option>
                                 <option>ইঞ্জিনিয়ার</option>
@@ -80,20 +140,20 @@ const Membership = () => {
                         </div>
                         <div className='fieldset w-full'>
                             <label className="label">Nationality <span className='font-bangla'>(জাতীয়তা)</span></label>
-                            <input {...register('nationality')} type="text" className='input w-full' placeholder='Nationality' />
+                            <input {...register('nationality', { required: true })} type="text" className='input w-full' placeholder='Nationality' required disabled={disableStatus} />
                         </div>
                     </div>
                     <div className="fieldset w-full">
                         <label className="label">Choose a Picture <span className='font-bangla'>(একটি ছবি নির্বাচন করুন)</span></label>
                         <input {...register('photo', {
                             required: true
-                        })} type="file" accept='image/*' className="file-input w-full" />
-                        {errors.photo && <p className='text-red-500'>{errors.photo.message}</p>}
+                        })} type="file" accept='image/*' onChange={handleImageChange} className="file-input w-full" required disabled={disableStatus} />
                         <h6 className='text-xs text-gray-500 italic'>** Max file size ~ 5 MB! <span className='font-bangla'>(সর্বোচ্চ ফাইল সাইজ ~ ৫ মেগাবাইট)</span></h6>
                     </div>
-                    <button className="btn border-0 shadow-none w-full bg-[#E97451] text-white my-3">Submit</button>
+                    <button className="btn border-0 shadow-none w-full bg-[#E97451] text-white my-3" disabled={disableStatus}>Submit</button>
                 </form>
             </div>
+            <ToastContainer />
         </div>
     );
 };
