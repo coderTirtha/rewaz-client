@@ -15,6 +15,7 @@ import ManageUsers from "../Pages/Dashboard_ManageUsers/ManageUsers";
 import ManageMembers from "../Pages/Dashboard_ManageMembers/ManageMembers";
 import Donation from "../Pages/Donation/Donation";
 import MemberDetails from "../Pages/MemberDetails/MemberDetails";
+import Manage_Students from "../Pages/Dashboard_ManageStudents/Manage_Students";
 
 const routes = createBrowserRouter([
     {
@@ -78,7 +79,7 @@ const routes = createBrowserRouter([
             },
             {
                 path: '/dashboard/manage-students',
-                element: <AdminRoute></AdminRoute>
+                element: <AdminRoute><Manage_Students /></AdminRoute>
             }
         ]
     }

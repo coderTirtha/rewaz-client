@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { IoIosSearch, IoMdInformationCircleOutline } from "react-icons/io";
 import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ManageMembers = () => {
     const axiosSecure = useAxiosSecure();
@@ -19,7 +20,7 @@ const ManageMembers = () => {
         return (text || '').toString().replace(regex, '<span class="bg-yellow-200 font-semibold">$1</span>');
     };
 
-    const { data: members = [], isLoading, isError } = useQuery({
+    const { data: members = [], isLoading, isError, refetch } = useQuery({
         queryKey: ['members'],
         queryFn: async () => {
             const result = await axiosSecure.get('/members');
@@ -83,8 +84,26 @@ const ManageMembers = () => {
     if (isLoading) return <p className="text-center my-10">Loading members...</p>;
     if (isError) return <p className="text-center text-red-500 my-10">Failed to load members.</p>;
 
+    const handleApproval = (email) => {
+        const approvedMember = {
+            membershipStatus: "approved"
+        }
+        axiosSecure.patch(`/members/${email}`, approvedMember, { withCredentials: true })
+        .then(res => {
+            console.log(res?.data);
+            if(res?.data?.modifiedCount) {
+                toast.success(`${email} has been approved as a member!`);
+                refetch();
+            }
+        })
+        .catch(error => {
+            toast.error(error.message);
+        })
+    }
+
     return (
         <div className="px-4 w-full">
+            <title>Manage Members | Dashboard - Rewaz</title>
             <div className='my-6'>
                 <h1 className='text-4xl font-bold text-center'>All Members</h1>
             </div>
@@ -168,11 +187,13 @@ const ManageMembers = () => {
                                             dangerouslySetInnerHTML={{ __html: highlightText(member?.phone, search) }}
                                         />
                                         <td className='font-bangla'>{member?.occupation}</td>
-                                        <td className='uppercase text-warning'>{member?.membershipStatus}</td>
-                                        <td className='flex gap-2'>
-                                            <button className='btn btn-outline btn-xs btn-success'>Approve</button>
+                                        <td className={`uppercase ${member?.membershipStatus === "pending" ? 'text-warning' : 'text-green-700'}`}>{member?.membershipStatus}</td>
+                                        <td className='flex flex-col gap-2'>
+                                            {
+                                                member?.membershipStatus === "pending" ? <button onClick={() => handleApproval(member?.email)} className='btn btn-outline btn-xs btn-success'>Approve</button> : ''
+                                            }
                                             <Link to={`/member/${member?._id}`}>
-                                                <button className="btn btn-outline btn-xs">
+                                                <button className="btn btn-outline btn-xs w-full">
                                                     <IoMdInformationCircleOutline /> Details
                                                 </button>
                                             </Link>
@@ -194,7 +215,10 @@ const ManageMembers = () => {
                 {
                     paginatedMembers.length > 0 ? (
                         paginatedMembers.map((member) => (
-                            <div key={member?._id} className="border p-4 rounded-lg shadow-sm">
+                            <div
+                                key={member?._id}
+                                className="p-4 rounded-xl bg-[#e0e5ec] shadow-[8px_8px_15px_#a3b1c6,_-8px_-8px_15px_#ffffff]"
+                            >
                                 <div className="flex items-center gap-4">
                                     <div className="avatar">
                                         <div className="w-14 rounded">
@@ -202,9 +226,18 @@ const ManageMembers = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <h2 className="font-semibold" dangerouslySetInnerHTML={{ __html: highlightText(member?.name, search) }}></h2>
-                                        <p className="text-sm text-gray-600" dangerouslySetInnerHTML={{ __html: highlightText(member?.email, search) }}></p>
-                                        <p className="text-sm text-gray-600" dangerouslySetInnerHTML={{ __html: highlightText(member?.phone, search) }}></p>
+                                        <h2
+                                            className="font-semibold"
+                                            dangerouslySetInnerHTML={{ __html: highlightText(member?.name, search) }}
+                                        />
+                                        <p
+                                            className="text-sm text-gray-600"
+                                            dangerouslySetInnerHTML={{ __html: highlightText(member?.email, search) }}
+                                        />
+                                        <p
+                                            className="text-sm text-gray-600"
+                                            dangerouslySetInnerHTML={{ __html: highlightText(member?.phone, search) }}
+                                        />
                                     </div>
                                 </div>
                                 <div className="mt-2 text-sm">
@@ -212,7 +245,9 @@ const ManageMembers = () => {
                                     <p><strong>Status:</strong> <span className="uppercase text-warning">{member?.membershipStatus}</span></p>
                                 </div>
                                 <div className="mt-2 flex gap-2">
-                                    <button className="btn btn-outline btn-xs btn-success">Approve</button>
+                                    {
+                                        member?.membershipStatus === "pending" ? <button onClick={() => handleApproval(member?.email)} className='btn btn-outline btn-xs btn-success'>Approve</button> : ''
+                                    }
                                     <Link to={`/member/${member?._id}`}>
                                         <button className="btn btn-outline btn-xs">
                                             <IoMdInformationCircleOutline /> Details
@@ -226,6 +261,7 @@ const ManageMembers = () => {
                     )
                 }
             </div>
+
 
             {/* Always-visible Pagination */}
             <div className="mt-6 flex justify-center gap-2 flex-wrap">
@@ -255,6 +291,7 @@ const ManageMembers = () => {
                     Next
                 </button>
             </div>
+            <ToastContainer />
         </div>
     );
 };

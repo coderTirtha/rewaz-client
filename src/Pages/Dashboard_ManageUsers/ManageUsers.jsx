@@ -92,6 +92,7 @@ const ManageUsers = () => {
 
     return (
         <div className='w-full'>
+            <title>Manage Users | Dashboard - Rewaz</title>
             <div className='my-6 text-center'>
                 <h2 className='text-4xl font-bold mb-4'>All Users</h2>
                 <form onSubmit={handleSearchSubmit} className='flex justify-center gap-2'>
