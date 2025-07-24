@@ -128,6 +128,7 @@ const Membership = () => {
                             <select {...register('occupation')} defaultValue="আপনার পেশা নির্বাচন করুন" className="select font-bangla w-full" required disabled={disableStatus}>
                                 <option disabled>আপনার পেশা নির্বাচন করুন</option>
                                 <option>ডাক্তার</option>
+                                <option>ছাত্র / ছাত্রী</option>
                                 <option>ইঞ্জিনিয়ার</option>
                                 <option>ব্যাংকার</option>
                                 <option>ব্যবসায়ী</option>

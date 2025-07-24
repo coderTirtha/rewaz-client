@@ -14,6 +14,7 @@ import Overview from "../Pages/Dashboard_Overview/Overview";
 import ManageUsers from "../Pages/Dashboard_ManageUsers/ManageUsers";
 import ManageMembers from "../Pages/Dashboard_ManageMembers/ManageMembers";
 import Donation from "../Pages/Donation/Donation";
+import MemberDetails from "../Pages/MemberDetails/MemberDetails";
 
 const routes = createBrowserRouter([
     {
@@ -48,6 +49,10 @@ const routes = createBrowserRouter([
             {
                 path: '/membership',
                 element: <PrivateRoute><Membership /></PrivateRoute>
+            },
+            {
+                path: '/member/:membershipId',
+                element: <AdminRoute><MemberDetails /></AdminRoute>
             }
         ]
     },
