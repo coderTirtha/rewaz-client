@@ -5,8 +5,10 @@ import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
+import { MdFileUpload } from 'react-icons/md';
 
 const Membership = () => {
+    const [photoUrl, setPhotoUrl] = useState("");
     const [disableStatus, setDisableStatus] = useState(false);
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
@@ -20,38 +22,39 @@ const Membership = () => {
     });
     const { register, handleSubmit, reset } = useForm();
 
-    const handleImageChange = e => {
-        const photo = e.target.files[0];
-        // console.log(photo);
-        const maxSize = 5 * 1024 * 1024;
-
-        if (photo) {
-            if (photo.size > maxSize) {
-                toast.warn("Photo is larger than 5 MB. Please select another one!", {
-                    autoClose: 3000,
-                    position: 'bottom-right'
-                });
-                e.target.value = null;
-                return;
-            }
+    const handleImageUpload = () => {
+        if (!window.cloudinary) {
+            toast.error("Cloudinary widget is not loaded!");
+            return;
         }
+
+        window.cloudinary.openUploadWidget(
+            {
+                cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME, // ⬅️ Replace with actual cloud name
+                uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET, // ⬅️ Replace with unsigned preset
+                sources: ['local', 'url', 'camera'],
+                multiple: false,
+                resourceType: 'image',
+                cropping: false,
+                folder: "rewaz-members"
+            },
+            (error, result) => {
+                if (!error && result.event === 'success') {
+                    const uploadedUrl = result.info.secure_url;
+                    setPhotoUrl(uploadedUrl);
+                    toast.success("Photo uploaded!");
+                } else if (error) {
+                    console.error(error);
+                    toast.error("Upload failed!");
+                }
+            }
+        );
     }
 
     const onSubmit = async (data) => {
         setDisableStatus(true);
-        // console.log(data);
-        const photoData = data?.photo[0];
-        // console.log(photoData);
-        const formData = new FormData();
-        formData.append('photo', photoData);
-        if (photoData) {
+        if (photoUrl) {
             try {
-                const result = await axiosSecure.post('/upload/members', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                if (result?.data?.url) {
                     const newMember = {
                         name: data?.firstName + " " + data?.lastName,
                         email: data?.email,
@@ -61,7 +64,7 @@ const Membership = () => {
                         dateOfBirth: data?.dateOfBirth,
                         occupation: data?.occupation,
                         nationality: data?.nationality,
-                        photo: result?.data?.url,
+                        photo: photoUrl,
                         membershipStatus: "pending"
                     }
                     const response = await axiosSecure.post('/members', newMember, { withCredentials: true });
@@ -74,7 +77,6 @@ const Membership = () => {
                         setDisableStatus(false);
                     }
                 }
-            }
             catch {
 
             }
@@ -146,12 +148,10 @@ const Membership = () => {
                     </div>
                     <div className="fieldset w-full">
                         <label className="label">Choose a Picture <span className='font-bangla'>(একটি ছবি নির্বাচন করুন)</span></label>
-                        <input {...register('photo', {
-                            required: true
-                        })} type="file" accept='image/*' onChange={handleImageChange} className="file-input w-full" required disabled={disableStatus} />
+                        <button type='button' onClick={handleImageUpload} className='btn btn-outline'><MdFileUpload /> Upload Photo</button>
                         <h6 className='text-xs text-gray-500 italic'>** Max file size ~ 5 MB! <span className='font-bangla'>(সর্বোচ্চ ফাইল সাইজ ~ ৫ মেগাবাইট)</span></h6>
                     </div>
-                    <button className="btn border-0 shadow-none w-full bg-[#E97451] text-white my-3" disabled={disableStatus}>Submit</button>
+                    <button type='submit' className="btn border-0 shadow-none w-full bg-[#E97451] text-white my-3" disabled={disableStatus}>Submit</button>
                 </form>
             </div>
             <ToastContainer />

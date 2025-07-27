@@ -60,37 +60,42 @@ const Profile = () => {
     //Handle image upload
     const handleImageUpload = async (e) => {
         e.preventDefault();
-        if (!photo) {
-            toast.error('Please select a photo to upload');
+
+        if (!window.cloudinary) {
+            toast.error('Cloudinary widget not loaded!');
             return;
         }
-        const formData = new FormData();
-        formData.append('photo', photo);
-        try {
-            const resp = await axiosSecure.post('/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+
+        window.cloudinary.openUploadWidget(
+            {
+                cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME, // 🔁 Replace with your actual cloud name
+                uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET, // 🔁 Replace with your unsigned preset name
+                sources: ['local', 'url', 'camera'],
+                multiple: false,
+                resourceType: 'image',
+                cropping: false,
+            },
+            (error, result) => {
+                if (!error && result.event === 'success') {
+                    const uploadedUrl = result.info.secure_url;
+                    const optimizedURL = optimizePhoto(uploadedUrl);
+
+                    updateUser(userProfile?.name, optimizedURL)
+                        .then(() => {
+                            toast.success('Photo uploaded successfully!');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        })
+                        .catch((bug) => {
+                            toast.error(bug.message);
+                        });
+                } else if (error) {
+                    console.error('Cloudinary Error:', error);
+                    toast.error('Upload failed.');
                 }
-            });
-            if (resp.data?.url) {
-                const optimizedURL = optimizePhoto(resp.data?.url);
-                updateUser(userProfile?.name, optimizedURL)
-                    .then(async (res) => {
-                        toast.success('Photo uploaded successfully!')
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                    })
-                    .catch(bug => {
-                        toast.error(bug.message);
-                    })
             }
-        }
-        catch (error) {
-            toast.error('Failed to upload photo');
-            console.error(error);
-            return;
-        }
+        );
     }
     //Handle log out
     //Using SweetAlert2 for confirmation dialog
@@ -127,7 +132,6 @@ const Profile = () => {
                 <div className='rounded-md shadow-md p-4'>
                     <div>
                         <form onSubmit={handleImageUpload} className='flex justify-center items-center gap-2'>
-                            <input type="file" accept="image/*" onChange={handlePhotoChange} className='file-input file-input-sm' />
                             <button type='submit' className='btn btn-outline btn-sm my-4'><AiOutlinePicture />Edit Photo</button>
                         </form>
                     </div>

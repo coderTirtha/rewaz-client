@@ -241,8 +241,8 @@ const ManageMembers = () => {
                                     </div>
                                 </div>
                                 <div className="mt-2 text-sm">
-                                    <p><strong>Occupation:</strong> {member?.occupation}</p>
-                                    <p><strong>Status:</strong> <span className="uppercase text-warning">{member?.membershipStatus}</span></p>
+                                    <p><strong>Occupation:</strong> <span className='font-bangla'>{member?.occupation}</span></p>
+                                    <p><strong>Status:</strong> <span className={`uppercase ${member?.membershipStatus === "pending" ? "text-warning" : "text-green-700"}`}>{member?.membershipStatus}</span></p>
                                 </div>
                                 <div className="mt-2 flex gap-2">
                                     {
