@@ -138,6 +138,7 @@ const Membership = () => {
                                 <option>কৃষক</option>
                                 <option>ক্ষুদ্র ব্যবসায়ী</option>
                                 <option>স্বনির্ভর</option>
+                                <option>শিল্পী</option>
                                 <option>অন্যান্য</option>
                             </select>
                         </div>

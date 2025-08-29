@@ -9,15 +9,21 @@ import { MdCardMembership, MdOutlinePendingActions } from 'react-icons/md';
 import { PiStudent } from 'react-icons/pi';
 import { FaUsersGear } from 'react-icons/fa6';
 import { LuLogs } from 'react-icons/lu';
+import useAdmin from '../hooks/useAdmin';
 
 const Dashboard = () => {
+    const {isAdmin, isAdminLoading} = useAdmin();
     const dashboardItems = <>
         <li><NavLink to="/dashboard/overview"><GrOverview />Overview</NavLink></li>
-        <li><NavLink to="/dashboard/manage-users"><FaUsersGear />Manage Users</NavLink></li>
-        <li><NavLink to="/dashboard/manage-members"><MdCardMembership />Manage Members</NavLink></li>
-        <li><NavLink to="/dashboard/manage-students"><PiStudent />Manage Students</NavLink></li>
-        <li><NavLink to="/dashboard/manage-blogs"><MdOutlinePendingActions />Manage Blogs</NavLink></li>
-        <li><NavLink to="/dashboard/donation-logs"><LuLogs />Donation Logs</NavLink></li>
+        {
+            isAdmin && !isAdminLoading && <>
+                <li><NavLink to="/dashboard/manage-users"><FaUsersGear />Manage Users</NavLink></li>
+                <li><NavLink to="/dashboard/manage-members"><MdCardMembership />Manage Members</NavLink></li>
+                <li><NavLink to="/dashboard/manage-students"><PiStudent />Manage Students</NavLink></li>
+                <li><NavLink to="/dashboard/manage-blogs"><MdOutlinePendingActions />Manage Blogs</NavLink></li>
+                <li><NavLink to="/dashboard/donation-logs"><LuLogs />Donation Logs</NavLink></li>
+            </>
+        }
     </>
     return (
         <div>

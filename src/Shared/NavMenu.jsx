@@ -8,12 +8,10 @@ import { FaBlog } from 'react-icons/fa';
 import { SlBadge } from 'react-icons/sl';
 import useAuth from '../hooks/useAuth';
 import { LuLayoutDashboard } from 'react-icons/lu';
-import useAdmin from '../hooks/useAdmin';
 import loader from '/images/loading.svg';
 
 const NavMenu = () => {
     const { user, loading } = useAuth();
-    const { isAdmin, isAdminLoading } = useAdmin();
     const [scrolled, setScrolled] = useState();
     useEffect(() => {
         const handleScroll = () => {
@@ -30,17 +28,17 @@ const NavMenu = () => {
         <li><NavLink to={'/blog'}><FaBlog />Blog</NavLink></li>
         <li><NavLink to={'/membership'}><SlBadge />Membership</NavLink></li>
         {
-            loading || isAdminLoading ? <><div className='min-h-screen flex flex-col justify-center items-center'>
+            loading ? <><div className='min-h-screen flex flex-col justify-center items-center'>
                 <img src={loader} alt="" />
                 <h2 className='text-lg'>Loading...</h2>
             </div></> :
-                user && isAdmin ? <li><NavLink to={'/dashboard/overview'}><LuLayoutDashboard />Dashboard</NavLink></li> : ''
+                user ? <li><NavLink to={'/dashboard/overview'}><LuLayoutDashboard />Dashboard</NavLink></li> : ''
         }
     </>
     return (
         <div>
             {
-                loading || isAdminLoading ? <>
+                loading ? <>
                     <div className='min-h-screen flex flex-col justify-center items-center'>
                         <img src={loader} alt="" />
                         <h2 className='text-lg'>Loading...</h2>

@@ -16,6 +16,10 @@ import ManageMembers from "../Pages/Dashboard_ManageMembers/ManageMembers";
 import Donation from "../Pages/Donation/Donation";
 import MemberDetails from "../Pages/MemberDetails/MemberDetails";
 import Manage_Students from "../Pages/Dashboard_ManageStudents/Manage_Students";
+import TermsAndConditions from "../Pages/Terms&Conditions/TermsAndConditions";
+import MembershipPolicy from "../Pages/MembershipPolicy/MembershipPolicy";
+import AddStudent from "../Pages/Dashboard_AddStudent/AddStudent";
+import StudentDetails from "../Pages/Dashboard_StudentDetails/StudentDetails";
 
 const routes = createBrowserRouter([
     {
@@ -34,6 +38,14 @@ const routes = createBrowserRouter([
             {
                 path: '/signup',
                 element: <SignUp />
+            },
+            {
+                path: '/terms-and-conditions',
+                element: <TermsAndConditions />
+            },
+            {
+                path: '/membership-policy',
+                element: <MembershipPolicy />
             },
             {
                 path: '/donate',
@@ -59,15 +71,15 @@ const routes = createBrowserRouter([
     },
     {
         path: '/dashboard',
-        element: <AdminRoute><Dashboard /></AdminRoute>,
+        element: <PrivateRoute><Dashboard /></PrivateRoute>,
         children: [
             {
                 index: true,
-                element: <AdminRoute><Overview /></AdminRoute>
+                element: <PrivateRoute><Overview /></PrivateRoute>
             },
             {
                 path: 'overview',
-                element: <AdminRoute><Overview /></AdminRoute>
+                element: <PrivateRoute><Overview /></PrivateRoute>
             },
             {
                 path: '/dashboard/manage-users',
@@ -80,6 +92,14 @@ const routes = createBrowserRouter([
             {
                 path: '/dashboard/manage-students',
                 element: <AdminRoute><Manage_Students /></AdminRoute>
+            },
+            {
+                path: '/dashboard/add-student',
+                element: <AdminRoute><AddStudent /></AdminRoute>
+            },
+            {
+                path: '/dashboard/student-details/:studentId',
+                element: <AdminRoute><StudentDetails /></AdminRoute>
             }
         ]
     }
