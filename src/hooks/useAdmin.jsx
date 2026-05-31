@@ -14,8 +14,9 @@ const useAdmin = () => {
             });
             return result?.data?.admin;
         },
-        staleTime: 1000 * 5,
-        retry: 2
+        staleTime: 1000 * 60 * 30,
+        refetchOnWindowFocus: false,
+        retry: 1
     });
     return { isAdmin, isAdminLoading };
 

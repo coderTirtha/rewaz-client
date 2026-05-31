@@ -5,14 +5,18 @@ import Error from "../Pages/Error/Error";
 import Login from "../Pages/Login/Login";
 import SignUp from "../Pages/SignUp/SignUp";
 import Blog from "../Pages/Blog/Blog";
+import BlogFeed from "../Pages/BlogFeed/BlogFeed";
 import PrivateRoute from "./PrivateRoute";
 import Profile from "../Pages/Profile/Profile";
 import Membership from "../Pages/Membership/Membership";
 import AdminRoute from "./AdminRoute";
 import Dashboard from "../Layouts/Dashboard";
 import Overview from "../Pages/Dashboard_Overview/Overview";
+import MembershipStatus from "../Pages/Dashboard_MembershipStatus/MembershipStatus";
+import MyBlogs from "../Pages/Dashboard_MyBlogs/MyBlogs";
 import ManageUsers from "../Pages/Dashboard_ManageUsers/ManageUsers";
 import ManageMembers from "../Pages/Dashboard_ManageMembers/ManageMembers";
+import ManageBlogs from "../Pages/Dashboard_ManageBlogs/ManageBlogs";
 import Donation from "../Pages/Donation/Donation";
 import MemberDetails from "../Pages/MemberDetails/MemberDetails";
 import Manage_Students from "../Pages/Dashboard_ManageStudents/Manage_Students";
@@ -56,6 +60,10 @@ const routes = createBrowserRouter([
                 element: <PrivateRoute><Blog /></PrivateRoute>
             },
             {
+                path: '/blogs-feed',
+                element: <PrivateRoute><BlogFeed /></PrivateRoute>
+            },
+            {
                 path: '/profile/:uid',
                 element: <PrivateRoute><Profile /></PrivateRoute>
             },
@@ -75,30 +83,42 @@ const routes = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <PrivateRoute><Overview /></PrivateRoute>
+                element: <Overview />
             },
             {
                 path: 'overview',
-                element: <PrivateRoute><Overview /></PrivateRoute>
+                element: <Overview />
             },
             {
-                path: '/dashboard/manage-users',
+                path: 'membership-status',
+                element: <MembershipStatus />
+            },
+            {
+                path: 'my-blogs',
+                element: <MyBlogs />
+            },
+            {
+                path: 'manage-users',
                 element: <AdminRoute><ManageUsers /></AdminRoute>
             },
             {
-                path: '/dashboard/manage-members',
+                path: 'manage-members',
                 element: <AdminRoute><ManageMembers /></AdminRoute>
             },
             {
-                path: '/dashboard/manage-students',
+                path: 'manage-students',
                 element: <AdminRoute><Manage_Students /></AdminRoute>
             },
             {
-                path: '/dashboard/add-student',
+                path: 'manage-blogs',
+                element: <AdminRoute><ManageBlogs /></AdminRoute>
+            },
+            {
+                path: 'add-student',
                 element: <AdminRoute><AddStudent /></AdminRoute>
             },
             {
-                path: '/dashboard/student-details/:studentId',
+                path: 'student-details/:studentId',
                 element: <AdminRoute><StudentDetails /></AdminRoute>
             }
         ]

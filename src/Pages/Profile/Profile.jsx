@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
@@ -13,16 +13,26 @@ const Profile = () => {
     const { uid } = useParams();
     const [photo, setPhoto] = useState(null); // State to hold the photo file
     const [editStatus, setEditStatus] = useState(false); // State to manage edit mode
-    const { register, handleSubmit } = useForm(); // Initialize react-hook-form
+    const { register, handleSubmit, reset } = useForm(); // Initialize react-hook-form
     const axiosSecure = useAxiosSecure(); // Custom hook for secure axios instance
     const { user, updateUser, logOut } = useAuth(); // Custom hook for authentication
     const { data: userProfile, isLoading, refetch } = useQuery({
-        queryKey: ["user"],
+        queryKey: ["user", uid],
+        enabled: !!uid,
         queryFn: async () => {
             const res = await axiosSecure.get(`/user/${uid}`);
             return res.data;
         },
     }); // Fetch user profile data using react-query
+
+    useEffect(() => {
+        reset({
+            name: userProfile?.name || user?.displayName || '',
+            email: userProfile?.email || user?.email || '',
+            phone: userProfile?.phone || '',
+            address: userProfile?.address || ''
+        });
+    }, [reset, userProfile, user]);
     //Edit profile button handler
     const handleEdit = () => {
         setEditStatus(true);
@@ -123,21 +133,21 @@ const Profile = () => {
     ]
 
     return (
-        <div className='my-20'>
+        <div className='page-surface my-20'>
             <title>{`Profile - Rewaz | ${userProfile?.name}`}</title>
             <div className='my-8'>
                 <h1 className='text-3xl font-bold text-center'>Profile - {user?.displayName}</h1>
             </div>
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-2xl mx-auto'>
-                <div className='rounded-md shadow-md p-4'>
+            <div className='mx-auto grid max-w-3xl grid-cols-1 gap-4 lg:grid-cols-2'>
+                <div className='surface-card p-5'>
                     <div>
                         <form onSubmit={handleImageUpload} className='flex justify-center items-center gap-2'>
-                            <button type='submit' className='btn btn-outline btn-sm my-4'><AiOutlinePicture />Edit Photo</button>
+                            <button type='submit' className='btn btn-sm my-4 border-[#E97451] text-[#E97451] hover:bg-[#E97451] hover:text-white'><AiOutlinePicture />Edit Photo</button>
                         </form>
                     </div>
                     <div className='flex flex-col justify-center items-center space-y-2 my-4'>
                         <div className="avatar">
-                            <div className="w-50 rounded-full">
+                            <div className="w-50 rounded-full ring-4 ring-stone-100">
                                 <img src={user?.photoURL ? user?.photoURL : userAvatar} alt="" className='max-w-[300px]' />
                             </div>
                         </div>
@@ -150,20 +160,20 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
-                <div className='rounded-md shadow-md p-4 space-y-2'>
+                <div className='surface-card space-y-2 p-5'>
                     <div className='flex justify-end'>
-                        <button className='btn btn-outline' onClick={handleEdit}><AiFillEdit />Edit Profile</button>
+                        <button className='btn btn-outline border-[#E97451] text-[#E97451] hover:bg-[#E97451] hover:text-white' onClick={handleEdit}><AiFillEdit />Edit Profile</button>
                     </div>
                     <form onSubmit={handleSubmit(onSubmit)} className='space-y-1'>
                         <label className="label">Name</label>
-                        {isLoading || <input type="text" defaultValue={userProfile?.name} {...register("name")} className='input' readOnly={!editStatus} />}
+                        <input type="text" {...register("name")} className='input soft-input' readOnly={!editStatus} />
                         <label className="label">Email</label>
-                        <input type="email" defaultValue={userProfile?.email} className='input text-gray-400' readOnly />
+                        <input type="email" {...register("email")} className='input soft-input text-gray-400' readOnly />
                         <label className="label">Phone</label>
-                        {isLoading || <input type="tel" defaultValue={userProfile?.phone} {...register("phone")} className='input' readOnly={!editStatus} />}
+                        <input type="tel" {...register("phone")} className='input soft-input' readOnly={!editStatus} />
                         <label className="label">Address</label>
-                        {isLoading || <input type="text" defaultValue={userProfile?.address || "N/A"} {...register("address")} className='input' readOnly={!editStatus} />}
-                        <button type="submit" className="btn btn-sm lg:btn-md bg-[#E97451] text-white my-4 flex items-center gap-2" disabled={!editStatus}><AiOutlineSave className="text-lg" /> Save Changes</button>
+                        <input type="text" {...register("address")} className='input soft-input' readOnly={!editStatus} />
+                        <button type="submit" className="btn btn-sm lg:btn-md my-4 flex items-center gap-2 border-0 bg-[#E97451] text-white shadow-lg shadow-[#E97451]/20" disabled={!editStatus}><AiOutlineSave className="text-lg" /> Save Changes</button>
                     </form>
                 </div>
             </div>

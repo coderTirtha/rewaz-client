@@ -5,12 +5,12 @@ import { BiSolidQuoteLeft } from 'react-icons/bi';
 
 const Quote = () => {
     return (
-        <div style={{ backgroundImage: `url(${quoteBg})` }} className='bg-cover max-w-screen bg-center bg-no-repeat py-10 bg-blend-overlay'>
-            <div className='max-w-4xl mx-auto flex flex-col-reverse md:flex-row gap-6 items-center'>
+        <div style={{ backgroundImage: `url(${quoteBg})` }} className='bg-cover bg-center bg-no-repeat py-12 bg-blend-overlay'>
+            <div className='mx-auto flex max-w-5xl flex-col-reverse items-center gap-6 px-4 md:flex-row'>
                 <div className='flex-1' data-aos="fade-right" data-aos-duration="1000">
-                    <img src={zakirHussain} alt="" className='max-w-[300px] h-[300px] lg:max-w-[500px] lg:h-[500px] object-cover rounded-tl-4xl rounded-br-4xl' />
+                    <img src={zakirHussain} alt="" className='h-[300px] max-w-[300px] object-cover shadow-2xl lg:h-[500px] lg:max-w-[500px] rounded-tl-4xl rounded-br-4xl' />
                 </div>
-                <div className='flex-1 p-4' data-aos="fade-zoom-in"
+                <div className='flex-1 rounded-[2rem] border border-white/10 bg-black/20 p-6 shadow-2xl backdrop-blur-sm' data-aos="fade-zoom-in"
                     data-aos-easing="ease-in-back"
                     data-aos-delay="300"
                     data-aos-offset="0" data-aos-duration="1000">

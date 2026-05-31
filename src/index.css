@@ -1,6 +1,100 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-.active {
-    @apply bg-[#1C1C1C] text-white;
+:root {
+    --rewaz-orange: #E97451;
+    --rewaz-orange-deep: #D26B2E;
+    --rewaz-dark: #1C1C1C;
+    --rewaz-cream: #fff8f4;
 }
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(233, 116, 81, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(28, 28, 28, 0.06), transparent 22%),
+        linear-gradient(180deg, #ffffff 0%, var(--rewaz-cream) 100%);
+    color: #171717;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+    display: block;
+}
+
+::selection {
+    background: rgba(233, 116, 81, 0.18);
+    color: #111111;
+}
+
+.active {
+    @apply border border-[#E97451]/20 bg-[#fff4ef] text-[#D26B2E] shadow-sm;
+}
+
+.page-surface {
+    position: relative;
+    overflow: hidden;
+}
+
+.page-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at top left, rgba(233, 116, 81, 0.07), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(28, 28, 28, 0.04), transparent 20%);
+}
+
+.surface-card {
+    @apply rounded-3xl border border-stone-200 bg-white shadow-[0_16px_50px_rgba(15,23,42,0.09)];
+}
+
+/* surface-card remains light by default */
+
+.section-shell {
+    @apply mx-auto max-w-7xl px-4 py-10;
+}
+
+.soft-input,
+.soft-textarea,
+.soft-select {
+    @apply border-stone-300 bg-stone-50 shadow-sm transition focus:border-[#E97451] focus:outline-none focus:ring-2 focus:ring-[#E97451]/15;
+}
+
+.soft-panel {
+    @apply rounded-[2rem] border border-stone-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.08)];
+}
+
+.brand-button {
+    @apply border-0 bg-[#E97451] text-white shadow-lg shadow-[#E97451]/20 transition hover:-translate-y-0.5 hover:bg-[#d8653f] hover:shadow-xl hover:shadow-[#E97451]/30;
+}
+
+.brand-button-outline {
+    @apply border border-stone-900/10 bg-white text-[#1C1C1C] shadow-sm transition hover:-translate-y-0.5 hover:border-[#E97451] hover:bg-[#fff7f3] hover:text-[#E97451];
+}
+
+.brand-surface {
+    @apply rounded-[2rem] border border-stone-200 bg-white/90 shadow-[0_20px_70px_rgba(15,23,42,0.1)] backdrop-blur-sm;
+}
+
+.brand-banner {
+    background:
+        linear-gradient(135deg, rgba(28, 28, 28, 0.94), rgba(28, 28, 28, 0.82) 55%, rgba(233, 116, 81, 0.9));
+}
+
+.brand-chip {
+    @apply inline-flex items-center rounded-full border border-[#E97451]/20 bg-[#fff4ef] px-3 py-1 text-xs font-semibold tracking-[0.2em] text-[#D26B2E];
+}
+
+.brand-divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-[#E97451]/35 to-transparent;
+}
+
+/* No night-mode overrides — theme switching removed. */

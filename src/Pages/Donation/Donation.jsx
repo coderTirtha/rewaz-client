@@ -2,7 +2,7 @@ import React from 'react';
 
 const Donation = () => {
     return (
-        <div>
+        <div className='page-surface min-h-screen'>
             
         </div>
     );

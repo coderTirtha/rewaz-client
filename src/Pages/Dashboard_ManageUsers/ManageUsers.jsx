@@ -7,6 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { FaSearch } from 'react-icons/fa';
 import { GrCaretNext, GrCaretPrevious } from 'react-icons/gr';
 import Swal from 'sweetalert2';
+import { FiUsers, FiUserCheck, FiUserX } from 'react-icons/fi';
 
 const ManageUsers = () => {
     const axiosSecure = useAxiosSecure();
@@ -59,6 +60,13 @@ const ManageUsers = () => {
         setCurrentPage(page);
     };
 
+    const summary = {
+        total: users?.length || 0,
+        admins: users?.filter((user) => user?.role === 'admin')?.length || 0,
+        members: users?.filter((user) => user?.role === 'member')?.length || 0,
+        guests: users?.filter((user) => !user?.role || user?.role === 'user')?.length || 0,
+    };
+
     const handleRole = (role, email) => {
         const updatedRole = {
             role: role
@@ -91,72 +99,88 @@ const ManageUsers = () => {
     }
 
     return (
-        <div className='w-full'>
+        <div className='relative w-full overflow-hidden px-4 py-6'>
+            <div className='pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_rgba(233,116,81,0.12),_transparent_36%),linear-gradient(180deg,_#fff_0%,_#fff7f4_100%)]' />
             <title>Manage Users | Dashboard - Rewaz</title>
-            <div className='my-6 text-center'>
-                <h2 className='text-4xl font-bold mb-4'>All Users</h2>
-                <form onSubmit={handleSearchSubmit} className='flex justify-center gap-2'>
-                    <label className="input input-sm max-w-sm">
-                        <span className="label"><FaSearch /></span>
-                        <input
-                            type='text'
-                            placeholder='Search by name, email or role...'
-                            className=''
-                            value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
-                        />
-                    </label>
-                    <button type='submit' className='btn btn-sm'>Search</button>
-                </form>
-            </div>
+            <div className='mx-auto max-w-7xl space-y-6'>
+                <div className='rounded-3xl border border-stone-200 bg-gradient-to-r from-stone-900 via-stone-900 to-[#E97451] p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.18)]'>
+                    <p className='text-xs uppercase tracking-[0.45em] text-amber-200'>Administration</p>
+                    <div className='mt-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between'>
+                        <div>
+                            <h1 className='text-3xl font-bold'>Manage users</h1>
+                            <p className='mt-2 max-w-2xl text-sm text-white/75'>Review the registered user base, promote trusted accounts, and keep the directory searchable at a glance.</p>
+                        </div>
+                        <div className='grid grid-cols-2 gap-3 text-sm md:grid-cols-4'>
+                            <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Total <span className='block text-2xl font-bold'>{summary.total}</span></div>
+                            <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Admins <span className='block text-2xl font-bold'>{summary.admins}</span></div>
+                            <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Members <span className='block text-2xl font-bold'>{summary.members}</span></div>
+                            <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Users <span className='block text-2xl font-bold'>{summary.guests}</span></div>
+                        </div>
+                    </div>
+                </div>
 
-            {/* Desktop Table View */}
-            <div className='hidden md:block overflow-x-auto mx-4'>
-                <table className='table w-full'>
-                    <thead>
-                        <tr>
-                            <th>Sl. No.</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>User ID</th>
-                            <th>Address</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginatedUsers?.map((user, index) => (
-                            <tr key={user?._id} className='text-xs'>
-                                <td>{(currentPage - 1) * usersPerPage + index + 1}</td>
-                                <td>{user?.name}</td>
-                                <td>{user?.email}</td>
-                                <td>{user?.phone}</td>
-                                <td className='flex justify-between items-center gap-x-3'>
-                                    <span id={`userID${index}`}>{user?.userId}</span>
-                                    <button onClick={() => handleIdCopy(index)} className='btn btn-outline btn-xs'>
-                                        <MdContentCopy />
-                                    </button>
-                                </td>
-                                <td>{user?.address}</td>
-                                <td className={`uppercase ${user?.role === 'admin' ? 'text-green-600' : ''}`}>
-                                    {user?.role}
-                                </td>
-                                <td className='flex gap-2'>
-                                    {
-                                        user?.role === "admin"
+                <div className='rounded-3xl border border-stone-200 bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>
+                    <form onSubmit={handleSearchSubmit} className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
+                        <label className='flex w-full max-w-xl items-center gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 shadow-sm'>
+                            <FaSearch className='text-stone-400' />
+                            <input
+                                type='text'
+                                placeholder='Search by name, email or role...'
+                                className='w-full bg-transparent outline-none'
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
+                            />
+                        </label>
+                        <button type='submit' className='btn brand-button'>Search</button>
+                    </form>
+                </div>
+
+                {/* Desktop Table View */}
+                <div className='hidden md:block overflow-x-auto'>
+                    <table className='table w-full rounded-3xl border border-stone-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>
+                        <thead>
+                            <tr className='bg-stone-50 text-xs uppercase text-stone-500'>
+                                <th>Sl. No.</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>User ID</th>
+                                <th>Address</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paginatedUsers?.map((user, index) => (
+                                <tr key={user?._id} className='text-xs transition hover:bg-stone-50/80'>
+                                    <td>{(currentPage - 1) * usersPerPage + index + 1}</td>
+                                    <td className='font-semibold text-stone-900'>{user?.name}</td>
+                                    <td>{user?.email}</td>
+                                    <td>{user?.phone}</td>
+                                    <td className='flex items-center gap-x-3'>
+                                        <span id={`userID${index}`}>{user?.userId}</span>
+                                        <button onClick={() => handleIdCopy(index)} className='btn btn-outline btn-xs'>
+                                            <MdContentCopy />
+                                        </button>
+                                    </td>
+                                    <td>{user?.address}</td>
+                                    <td className={`uppercase font-semibold ${user?.role === 'admin' ? 'text-emerald-600' : 'text-stone-600'}`}>
+                                        {user?.role}
+                                    </td>
+                                    <td className='flex gap-2'>
+                                        {user?.role === "admin"
                                             ? <button onClick={() => handleRole("user", user?.email)} className='btn btn-outline btn-xs btn-error'>
                                                 <IoPersonRemoveOutline /> Remove Admin
                                             </button>
                                             : <button onClick={() => handleRole("admin", user?.email)} className='btn btn-outline btn-xs btn-success'>
                                                 <IoPersonAddOutline /> Make Admin
                                             </button>
-                                    }
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                        }
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
 
                 {/* Pagination Buttons */}
                 <div className="flex justify-center my-6 space-x-2">
@@ -187,28 +211,30 @@ const ManageUsers = () => {
                     </button>
                 </div>
 
-            </div>
+                </div>
 
             {/* Mobile Card View */}
             <div className='block md:hidden space-y-4'>
                 {paginatedUsers?.map((user, index) => (
-                    <div key={user._id} className='rounded-xl p-4 shadow-xl mx-2'>
-                        <p><span className='font-semibold'>Sl. No:</span> {(currentPage - 1) * usersPerPage + index + 1}</p>
-                        <p><span className='font-semibold'>Name:</span> {user?.name}</p>
-                        <p><span className='font-semibold'>Email:</span> {user?.email}</p>
-                        <p><span className='font-semibold'>Phone:</span> {user?.phone}</p>
-                        <p><span className='font-semibold'>User ID:</span> <span id={`userID${index}`}>{user?.userId}</span> <button onClick={() => handleIdCopy(index)} className='btn btn-outline btn-xs'><MdContentCopy /></button></p>
-                        <p><span className='font-semibold'>Address:</span> {user?.address}</p>
+                    <div key={user._id} className='rounded-2xl border border-stone-200 bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>
+                        <p className='text-xs uppercase tracking-[0.3em] text-stone-400'>User {(currentPage - 1) * usersPerPage + index + 1}</p>
+                        <h3 className='mt-2 text-lg font-bold text-stone-900'>{user?.name}</h3>
+                        <p className='text-sm text-stone-500'>{user?.email}</p>
+                        <div className='mt-4 grid gap-2 text-sm text-stone-700'>
+                            <p><span className='font-semibold'>Phone:</span> {user?.phone}</p>
+                            <p className='flex items-center gap-2'><span className='font-semibold'>User ID:</span> <span id={`userID${index}`}>{user?.userId}</span> <button onClick={() => handleIdCopy(index)} className='btn btn-outline btn-xs'><MdContentCopy /></button></p>
+                            <p><span className='font-semibold'>Address:</span> {user?.address}</p>
+                        </div>
                         <p>
                             <span className='font-semibold'>Role:</span>{' '}
-                            <span className={`uppercase ${user?.role === 'admin' ? 'text-green-600' : ''}`}>
+                            <span className={`uppercase font-semibold ${user?.role === 'admin' ? 'text-emerald-600' : 'text-stone-600'}`}>
                                 {user?.role}
                             </span>
                         </p>
                         <div className='flex flex-col gap-2 mt-2'>
                             {
                                 user?.role === "admin"
-                                    ? <button onClick={() => handleRole("user", user?.email)} className='btn btn-outline btn-sm btn-error'>Remove as Admin</button>
+                                    ? <button onClick={() => handleRole("user", user?.email)} className='btn btn-outline btn-sm btn-error'>Remove Admin</button>
                                     : <button onClick={() => handleRole("admin", user?.email)} className='btn btn-outline btn-sm btn-success'>Make Admin</button>
                             }
                         </div>
@@ -243,6 +269,8 @@ const ManageUsers = () => {
                         <GrCaretNext /> Next
                     </button>
                 </div>
+            </div>
+
             </div>
 
             <ToastContainer />

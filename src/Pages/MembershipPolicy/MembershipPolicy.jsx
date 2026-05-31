@@ -149,11 +149,11 @@ const MemberShipPolicyPDF = () => (
 
 const MembershipPolicy = () => {
     return (
-        <div className='my-20 mx-4 max-w-4xl lg:mx-auto'>
+        <div className='page-surface my-20 mx-4 max-w-4xl lg:mx-auto'>
             <title>Membership Policy | Rewaz</title>
-            <div className='shadow-md p-6 rounded-md'>
+            <div className='surface-card p-6'>
                 <div className='flex justify-end mb-4'>
-                    <PDFDownloadLink document={<MemberShipPolicyPDF />} fileName="Membership-policy.pdf" className='btn btn-outline btn-sm'>
+                    <PDFDownloadLink document={<MemberShipPolicyPDF />} fileName="Membership-policy.pdf" className='btn btn-sm border-[#E97451] text-[#E97451] hover:bg-[#E97451] hover:text-white'>
                         {({ loading }) =>
                             loading ? 'Loading document...' : 'Download in PDF'
                         }
@@ -163,7 +163,7 @@ const MembershipPolicy = () => {
                     Membership Policy <span className='font-bangla'>(সদস্যপদ নীতিমালা)</span>
                 </h1>
                 <div>
-                    <ol className='list-decimal list-inside text-justify'>
+                    <ol className='list-decimal list-inside text-justify leading-7'>
                         <li className='my-8'><span className='font-bangla'>রেওয়াজের সকল শিক্ষার্থীদের অভিভাবকবৃন্দ, সহশিল্পী, সংগীতপ্রেমী এবং অত্র প্রতিষ্ঠানের লক্ষ্য ও সাংস্কৃতিক বিকাশে আগ্রহী সকল শুভানুধ্যায়ীরা সদস্যপদের জন্যে আবেদন করতে পারবেন।</span> <br /><span className='text-gray-500 italic'>(Guardians of Rewaz students, fellow artists, music enthusiasts, and well-wishers interested in promoting our mission and cultural development are eligible to become members)</span></li>
 
                         <li className='my-8'><span className='font-bangla'>সদস্যপদের জন্যে আবেদন করার পরে প্রতিষ্ঠানের অ্যাডমিন প্যানেল কর্তৃক সদস্যপদ কার্ড ইস্যু হতে কিংবা সদস্যপদ অ্যাপ্রুভ হতে ২৪-৪৮ ঘণ্টা সময় লাগতে পারে। উক্ত সময়কাল যাবৎ ধৈর্য্য সহকারে সকলকে অপেক্ষা করার জন্য অনুরোধ করা হচ্ছে।</span> <br /><span className='text-gray-500 italic'>(After applying for membership, it may take 24–48 hours for the membership card to be issued or for the membership to be approved by the organization’s admin panel. During this period, everyone is kindly requested to wait patiently)</span></li>

@@ -2,8 +2,9 @@ import React from 'react';
 
 const SectionTitle = ({ headingColor, headingExtend }) => {
     return (
-        <div className='max-w-xl mx-4 md:max-w-xl md:mx-auto py-6 border-b-[#1C1C1C] border-b-2' data-aos="fade-up" data-aos-duration="1000">
-            <h1 className='text-5xl text-center font-bold'><span className='text-[#D26B2E]'>{headingColor}</span> {headingExtend}</h1>
+        <div className='mx-4 max-w-2xl py-6 md:mx-auto' data-aos="fade-up" data-aos-duration="1000">
+            <div className='brand-divider mb-5' />
+            <h1 className='text-center text-4xl font-bold tracking-tight text-[#1C1C1C] md:text-5xl'><span className='text-[#D26B2E]'>{headingColor}</span> {headingExtend}</h1>
         </div>
     );
 };

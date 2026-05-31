@@ -80,37 +80,37 @@ const AddStudent = () => {
         }
     }
     return (
-        <div className='w-full'>
+        <div className='page-surface w-full'>
             <div className='flex justify-center items-center'>
-                <div className='max-w-xs bg-neutral px-6 py-3 rounded-full my-8'>
+                <div className='max-w-xs rounded-full bg-neutral px-6 py-3 my-8 text-white shadow-lg shadow-black/10'>
                     <h1 className='text-white'><span className='font-bangla'>ভর্তির আবেদনপত্র</span> <span className='text-gray-400'>(Admission Form)</span></h1>
                 </div>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className='mx-4 md:mx-10 mb-12'>
+            <form onSubmit={handleSubmit(onSubmit)} className='surface-card mx-4 mb-12 p-6 md:mx-10'>
                 <div className='flex justify-end'>
                     <div className='fieldset'>
                         <label className='label'>Form No. <span className='font-bangla'>(ফর্ম নং)</span></label>
-                        <input {...register('formNumber', { required: true })} type="number" className='input w-full' placeholder="Form No." required />
+                        <input {...register('formNumber', { required: true })} type="number" className='input soft-input w-full' placeholder="Form No." required />
                     </div>
                 </div>
                 <div className='flex flex-col md:flex-row gap-4'>
                     <div className='fieldset w-full'>
                         <label className='label'>Student's Name - Bangla <span className='font-bangla'>(শিক্ষার্থীর নাম : বাংলায়)</span></label>
-                        <input {...register('studentNameBangla', { required: true })} type="text" className='input w-full font-bangla' placeholder="Student's Name - Bangla" required />
+                        <input {...register('studentNameBangla', { required: true })} type="text" className='input soft-input w-full font-bangla' placeholder="Student's Name - Bangla" required />
                     </div>
                     <div className='fieldset w-full'>
                         <label className='label'>Student's Name - English <span className='font-bangla'>(শিক্ষার্থীর নাম : ইংরেজিতে)</span></label>
-                        <input {...register('studentNameEnglish', { required: true })} type="text" className='input w-full' placeholder="Student's Name - English" required />
+                        <input {...register('studentNameEnglish', { required: true })} type="text" className='input soft-input w-full' placeholder="Student's Name - English" required />
                     </div>
                 </div>
                 <div className='flex flex-col md:flex-row gap-4'>
                     <div className='fieldset w-full'>
                         <label className='label'>Father's Name<span className='font-bangla'>(পিতার নাম)</span></label>
-                        <input {...register('fatherName', { required: true })} type="text" className='input w-full' placeholder="Father's Name" required />
+                        <input {...register('fatherName', { required: true })} type="text" className='input soft-input w-full' placeholder="Father's Name" required />
                     </div>
                     <div className='fieldset w-full'>
                         <label className='label'>Occupation<span className='font-bangla'>(পেশা)</span></label>
-                        <select {...register('fatherOccupation')} defaultValue="পিতার পেশা নির্বাচন করুন" className="select font-bangla w-full" required disabled={disableStatus}>
+                        <select {...register('fatherOccupation')} defaultValue="পিতার পেশা নির্বাচন করুন" className="select soft-select font-bangla w-full" required disabled={disableStatus}>
                             <option disabled>পিতার পেশা নির্বাচন করুন</option>
                             <option>ডাক্তার</option>
                             <option>ছাত্র / ছাত্রী</option>
@@ -130,11 +130,11 @@ const AddStudent = () => {
                 <div className='flex flex-col md:flex-row gap-4'>
                     <div className='fieldset w-full'>
                         <label className='label'>Mother's Name<span className='font-bangla'>(মাতার নাম)</span></label>
-                        <input {...register('motherName', { required: true })} type="text" className='input w-full' placeholder="Mother's Name" required />
+                        <input {...register('motherName', { required: true })} type="text" className='input soft-input w-full' placeholder="Mother's Name" required />
                     </div>
                     <div className='fieldset w-full'>
                         <label className='label'>Occupation<span className='font-bangla'>(পেশা)</span></label>
-                        <select {...register('motherOccupation')} defaultValue="মাতার পেশা নির্বাচন করুন" className="select font-bangla w-full" required disabled={disableStatus}>
+                        <select {...register('motherOccupation')} defaultValue="মাতার পেশা নির্বাচন করুন" className="select soft-select font-bangla w-full" required disabled={disableStatus}>
                             <option disabled>মাতার পেশা নির্বাচন করুন</option>
                             <option>ডাক্তার</option>
                             <option>ছাত্র / ছাত্রী</option>
@@ -155,33 +155,33 @@ const AddStudent = () => {
                 <div className='flex flex-col md:flex-row gap-4'>
                     <div className='fieldset w-full'>
                         <label className='label'>Village <span className='font-bangla'>(গ্রাম)</span></label>
-                        <input {...register('village', { required: true })} type="text" className='input w-full' placeholder="Village Name" required />
+                        <input {...register('village', { required: true })} type="text" className='input soft-input w-full' placeholder="Village Name" required />
                     </div>
                     <div className='fieldset w-full'>
                         <label className='label'>Post Office <span className='font-bangla'>(ডাকঘর)</span></label>
-                        <input {...register('postOffice', { required: true })} type="text" className='input w-full' placeholder="Post Office" required />
+                        <input {...register('postOffice', { required: true })} type="text" className='input soft-input w-full' placeholder="Post Office" required />
                     </div>
                     <div className='fieldset w-full'>
                         <label className='label'>Thana/Upazilla <span className='font-bangla'>(থানা/উপজেলা)</span></label>
-                        <input {...register('thana', { required: true })} type="text" className='input w-full' placeholder="Thana/Upazilla" required />
+                        <input {...register('thana', { required: true })} type="text" className='input soft-input w-full' placeholder="Thana/Upazilla" required />
                     </div>
                     <div className='fieldset w-full'>
                         <label className='label'>District <span className='font-bangla'>(জেলা)</span></label>
-                        <input {...register('district', { required: true })} type="text" className='input w-full' placeholder="District" required />
+                        <input {...register('district', { required: true })} type="text" className='input soft-input w-full' placeholder="District" required />
                     </div>
                 </div>
                 <div className='fieldset w-full'>
                     <label className='label'>Present Address <span className='font-bangla'>(বর্তমান ঠিকানা)</span></label>
-                    <input {...register('presentAddress', { required: true })} type="text" className='input w-full' placeholder="Present Address" required />
+                    <input {...register('presentAddress', { required: true })} type="text" className='input soft-input w-full' placeholder="Present Address" required />
                 </div>
                 <div className='flex flex-col md:flex-row gap-4'>
                     <div className='fieldset w-full'>
                         <label className='label'>Date of Birth <span className='font-bangla'>(জন্ম তারিখ)</span></label>
-                        <input {...register('dateOfBirth', { required: true })} type="date" className='input w-full' placeholder="Date of Birth" required />
+                        <input {...register('dateOfBirth', { required: true })} type="date" className='input soft-input w-full' placeholder="Date of Birth" required />
                     </div>
                     <div className='fieldset w-full'>
                         <label className='label'>Occupation <span className='font-bangla'>(পেশা)</span></label>
-                        <select {...register('studentOccupation')} defaultValue="আপনার পেশা নির্বাচন করুন" className="select font-bangla w-full" required disabled={disableStatus}>
+                        <select {...register('studentOccupation')} defaultValue="আপনার পেশা নির্বাচন করুন" className="select soft-select font-bangla w-full" required disabled={disableStatus}>
                             <option disabled>আপনার পেশা নির্বাচন করুন</option>
                             <option>ডাক্তার</option>
                             <option>ছাত্র / ছাত্রী</option>
@@ -199,17 +199,17 @@ const AddStudent = () => {
                     </div>
                     <div className='fieldset w-full'>
                         <label className='label'>Mobile No. <span className='font-bangla'>(মোবাইল নম্বর)</span></label>
-                        <input {...register('mobileNo', { required: true })} type="text" className='input w-full' placeholder="Mobile No." required />
+                        <input {...register('mobileNo', { required: true })} type="text" className='input soft-input w-full' placeholder="Mobile No." required />
                     </div>
                 </div>
                 <div className='flex flex-col md:flex-row gap-4'>
                     <div className='fieldset w-full'>
                         <label className='label'>Current Educational Institution<span className='font-bangla'>(অধ্যয়নরত শিক্ষা প্রতিষ্ঠানের নাম)</span></label>
-                        <input {...register('currentInstitution', { required: true })} type="text" className='input w-full' placeholder="Current Educational Institution" required />
+                        <input {...register('currentInstitution', { required: true })} type="text" className='input soft-input w-full' placeholder="Current Educational Institution" required />
                     </div>
                     <div className='fieldset flex-1 w-full'>
                         <label className='label'>Educational Qualification <span className='font-bangla'>(অধ্যয়নরত শ্রেণি / শিক্ষাগত যোগ্যতা)</span></label>
-                        <select {...register('educationalQualification')} defaultValue="আপনার শ্রেণি / শিক্ষাগত যোগ্যতা নির্বাচন করুন" className="select font-bangla w-full" required>
+                        <select {...register('educationalQualification')} defaultValue="আপনার শ্রেণি / শিক্ষাগত যোগ্যতা নির্বাচন করুন" className="select soft-select font-bangla w-full" required>
                             <option disabled>আপনার শ্রেণি / শিক্ষাগত যোগ্যতা নির্বাচন করুন</option>
                             <option>প্লে-গ্রুপ</option>
                             <option>নার্সারী</option>
@@ -233,14 +233,14 @@ const AddStudent = () => {
                 </div>
                 <div className='fieldset w-full'>
                     <label className='label'>Previous Trainer Name <span className='font-bangla'>(পূর্বে প্রশিক্ষণপ্রাপ্ত শিক্ষকের নাম)</span></label>
-                    <input {...register('previousTrainer', { required: true })} type="text" className='input w-full' placeholder="Previous Trainer Name" required />
+                    <input {...register('previousTrainer', { required: true })} type="text" className='input soft-input w-full' placeholder="Previous Trainer Name" required />
                 </div>
                 <div className="fieldset w-full">
                     <label className="label">Add Picture <span className='font-bangla'>(শিক্ষার্থীর ছবি সংযুক্ত করুন)</span></label>
-                    <button type='button' onClick={handleImageUpload} className='btn btn-outline'><MdFileUpload /> Upload Photo</button>
+                    <button type='button' onClick={handleImageUpload} className='btn border-[#E97451] text-[#E97451] hover:bg-[#E97451] hover:text-white'><MdFileUpload /> Upload Photo</button>
                     <h6 className='text-xs text-gray-500 italic'>** Max file size ~ 5 MB! <span className='font-bangla'>(সর্বোচ্চ ফাইল সাইজ ~ ৫ মেগাবাইট)</span></h6>
                 </div>
-                <button type='submit' className="btn border-0 shadow-none w-full bg-[#E97451] text-white my-3">Add Student</button>
+                <button type='submit' className="btn my-3 w-full border-0 bg-[#E97451] text-white shadow-lg shadow-[#E97451]/20">Add Student</button>
             </form>
             <ToastContainer />
         </div>
