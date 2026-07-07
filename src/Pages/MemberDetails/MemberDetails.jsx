@@ -6,6 +6,7 @@ import { FiClock, FiCreditCard, FiMapPin, FiPhone, FiUser } from 'react-icons/fi
 import { MdVerifiedUser } from 'react-icons/md';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const MemberDetails = () => {
     const { membershipId } = useParams();
@@ -43,7 +44,7 @@ const MemberDetails = () => {
                 </div>
 
                 {isLoading ? (
-                    <div className='rounded-3xl border border-stone-200 bg-white p-8 text-center shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>Loading member details...</div>
+                    <DashboardLoading title='Loading member details' subtitle='Fetching profile, payment history, and review state…' lines={2} />
                 ) : isError ? (
                     <div className='rounded-3xl border border-rose-200 bg-rose-50 p-8 text-center text-rose-700 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>Failed to load member details.</div>
                 ) : (

@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ToastContainer } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { FiUsers, FiUserCheck, FiSearch } from 'react-icons/fi';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const Manage_Students = () => {
     const axiosSecure = useAxiosSecure();
@@ -71,7 +72,7 @@ const Manage_Students = () => {
         setCurrentPage(1);
     };
 
-    if (isLoading) return <p className="text-center my-10">Loading students...</p>;
+    if (isLoading) return <DashboardLoading title='Loading students' subtitle='Fetching enrollment records and details…' lines={2} />;
     if (isError) return <p className="text-center text-red-500 my-10">Failed to load students.</p>;
 
     const handleStudentDeletion = async(studentID) => {

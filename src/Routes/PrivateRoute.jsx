@@ -1,16 +1,13 @@
 import React from 'react';
 import useAuth from '../hooks/useAuth';
 import { Navigate, useLocation } from 'react-router-dom';
-import loader from '/images/loading.svg';
+import DashboardLoading from '../Shared/DashboardLoading';
 
 const PrivateRoute = ({children}) => {
     const { user, loading } = useAuth();
     const location = useLocation();
     if (loading) {
-        return <div className='min-h-screen flex flex-col justify-center items-center'>
-            <img src={loader} alt="" />
-            <h2 className='text-lg'>Loading...</h2>
-        </div>
+        return <DashboardLoading title='Preparing your private workspace' subtitle='Loading your secure session…' variant='progress' />
     }
     if (user) {
         return children;

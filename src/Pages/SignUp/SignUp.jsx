@@ -3,40 +3,28 @@ import logo from '/images/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { useForm } from 'react-hook-form';
-import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { toast, ToastContainer } from 'react-toastify';
 
 const SignUp = () => {
     const { createUser } = useAuth();
     const { register, handleSubmit, reset } = useForm();
-    const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
     const onSubmit = (data) => {
-        createUser(data?.email, data?.password)
-        .then(response => {
-            const newUser = {
-                name: data?.name,
-                email: data?.email,
-                phone: data?.phone,
-                userId: response?.user?.uid,
-                role: 'user'
-            }
-            axiosSecure.post('/users', newUser, {withCredentials: true})
-            .then(resData => {
-                if(resData?.data?.insertedId) {
-                    toast.success('User profile created successfully');
-                    reset();
-                    setTimeout(() => {
-                        navigate('/');
-                    }, 2000);
-                }
-            })
-            .catch(err => {
-                toast.error(err.message);
-            })
+        createUser({
+            name: data?.name,
+            email: data?.email,
+            phone: data?.phone,
+            password: data?.password,
+        })
+        .then(() => {
+            toast.success('User profile created successfully');
+            reset();
+            setTimeout(() => {
+                navigate('/');
+            }, 2000);
         })
         .catch(error => {
-            toast.error(error.message);
+            toast.error(error?.response?.data?.message || error.message);
         })
     }
     return (

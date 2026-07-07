@@ -5,6 +5,7 @@ import { IoIosSearch, IoMdInformationCircleOutline } from "react-icons/io";
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { FiUsers, FiClock, FiUserCheck } from 'react-icons/fi';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const ManageMembers = () => {
     const axiosSecure = useAxiosSecure();
@@ -82,7 +83,7 @@ const ManageMembers = () => {
         setCurrentPage(1);
     };
 
-    if (isLoading) return <p className="text-center my-10">Loading members...</p>;
+    if (isLoading) return <DashboardLoading title='Loading members' subtitle='Fetching approvals and member records…' lines={2} />;
     if (isError) return <p className="text-center text-red-500 my-10">Failed to load members.</p>;
 
     const handleApproval = (email) => {

@@ -9,11 +9,29 @@ import { SlBadge } from 'react-icons/sl';
 import useAuth from '../hooks/useAuth';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { IoHomeOutline } from 'react-icons/io5';
-import loader from '/images/loading.svg';
+import DashboardLoading from './DashboardLoading';
+import { useLocation } from 'react-router-dom';
 
 const NavMenu = () => {
     const { user, loading } = useAuth();
     const [scrolled, setScrolled] = useState();
+    const location = useLocation();
+
+    const getLoadingCopy = () => {
+        if (location.pathname === '/') {
+            return { title: 'Opening Rewaz home', subtitle: 'Preparing the homepage experience…' };
+        }
+
+        if (location.pathname.startsWith('/dashboard')) {
+            return { title: 'Opening dashboard', subtitle: 'Restoring navigation and account state…' };
+        }
+
+        if (location.pathname.includes('/login')) {
+            return { title: 'Opening login', subtitle: 'Preparing your sign-in screen…' };
+        }
+
+        return { title: 'Loading your session', subtitle: 'Restoring navigation and account state…' };
+    };
     const menuLinkClass = ({ isActive }) =>
         `group flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:border-[#E97451]/25 hover:bg-[#fff7f3] hover:text-[#E97451] ${isActive
             ? 'border-[#E97451]/25 bg-gradient-to-r from-[#fff4ef] to-white text-[#D26B2E] shadow-sm'
@@ -40,10 +58,7 @@ const NavMenu = () => {
     return (
         <div>
             {loading ? (
-                <div className='flex min-h-screen flex-col items-center justify-center bg-white'>
-                    <img src={loader} alt="" />
-                    <h2 className='text-lg'>Loading...</h2>
-                </div>
+                <DashboardLoading {...getLoadingCopy()} variant='progress' />
             ) : (
                 <div className="drawer">
                     <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
@@ -84,7 +99,9 @@ const NavMenu = () => {
                                 )}
                             </div>
                         </div>
-                        <Outlet />
+                        <div key={location.pathname} className='rewaz-page-enter'>
+                            <Outlet />
+                        </div>
                     </div>
                     <div className="drawer-side fixed left-0 top-0 z-[100]">
                         <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay"></label>

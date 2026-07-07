@@ -5,6 +5,7 @@ import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { toast, ToastContainer } from 'react-toastify';
 import Swal from 'sweetalert2';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const statusStyles = {
     pending: 'bg-amber-100 text-amber-900',
@@ -124,7 +125,7 @@ const MyBlogs = () => {
                 </div>
 
                 {isLoading ? (
-                    <div className='rounded-2xl border border-stone-200 bg-white p-8 text-center text-stone-500 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>Loading your blogs...</div>
+                    <DashboardLoading title='Loading your blog submissions' subtitle='Pulling your latest drafts and review status…' lines={2} />
                 ) : blogs.length > 0 ? (
                     <div className='grid gap-4'>
                         {blogs.map((blog) => {
@@ -134,6 +135,7 @@ const MyBlogs = () => {
 
                             return (
                                 <article key={blog?._id} className={`rounded-3xl border p-6 shadow-[0_12px_40px_rgba(15,23,42,0.08)] transition-transform hover:-translate-y-0.5 ${isEdited ? 'border-amber-300 bg-amber-50/40' : 'border-stone-200 bg-white'}`}>
+                                    {blog?.blogImage ? <img src={blog.blogImage} alt={blog?.title || 'Blog'} className='mb-4 h-48 w-full rounded-2xl object-cover' /> : null}
                                     <div className='flex flex-col gap-4 md:flex-row md:items-start md:justify-between'>
                                         <div className='max-w-3xl'>
                                             <div className='flex flex-wrap items-center gap-2'>

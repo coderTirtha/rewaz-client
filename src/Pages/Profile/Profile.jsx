@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 import Swal from 'sweetalert2';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const Profile = () => {
     const { uid } = useParams();
@@ -33,6 +34,10 @@ const Profile = () => {
             address: userProfile?.address || ''
         });
     }, [reset, userProfile, user]);
+
+    if (isLoading) {
+        return <DashboardLoading title='Loading profile' subtitle='Fetching your account details and settings…' lines={2} />;
+    }
     //Edit profile button handler
     const handleEdit = () => {
         setEditStatus(true);

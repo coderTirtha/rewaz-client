@@ -12,10 +12,12 @@ import { LuLogs } from 'react-icons/lu';
 import { FaBookOpen } from 'react-icons/fa6';
 import useAuth from '../hooks/useAuth';
 import useAdmin from '../hooks/useAdmin';
+import { useLocation } from 'react-router-dom';
 
 const Dashboard = () => {
     const { user } = useAuth();
     const { isAdmin, isAdminLoading } = useAdmin();
+    const location = useLocation();
     const dashboardItems = <>
         <li><NavLink to="/dashboard/overview"><GrOverview />Overview</NavLink></li>
         {!isAdminLoading && <li><NavLink to="/dashboard/membership-status"><MdCardMembership />Membership Status</NavLink></li>}
@@ -39,7 +41,9 @@ const Dashboard = () => {
                     <label htmlFor="my-drawer-2" className="btn btn-outline btn-sm text-2xl drawer-button fixed top-2 right-2 lg:hidden brand-button-outline">
                         <AiOutlineMenuFold />
                     </label>
-                    <Outlet />
+                    <div key={location.pathname} className='w-full rewaz-page-enter'>
+                        <Outlet />
+                    </div>
                 </div>
                 <div className="drawer-side">
                     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>

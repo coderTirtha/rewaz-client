@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const statusTabs = [
     { label: 'Pending', value: 'pending' },
@@ -125,11 +126,12 @@ const ManageBlogs = () => {
                 </div>
 
                 {isLoading ? (
-                    <div className='rounded-2xl border border-stone-200 bg-white p-8 text-center text-stone-500 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>Loading blogs...</div>
+                    <DashboardLoading title='Loading blog moderation queue' subtitle='Reviewing submissions and moderation status…' lines={3} />
                 ) : blogs.length > 0 ? (
                     <div className='grid gap-4'>
                         {blogs.map((blog) => (
                             <article key={blog?._id} className={`rounded-3xl border p-6 shadow-[0_12px_40px_rgba(15,23,42,0.08)] transition-transform hover:-translate-y-0.5 ${blog?.editedFields?.length ? 'border-amber-300 bg-amber-50/40' : 'border-stone-200 bg-white'}`}>
+                                {blog?.blogImage ? <img src={blog.blogImage} alt={blog?.title || 'Blog'} className='mb-4 h-48 w-full rounded-2xl object-cover' /> : null}
                                 <div className='flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between'>
                                     <div className='max-w-4xl'>
                                         <div className='flex flex-wrap items-center gap-2'>

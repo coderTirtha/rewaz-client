@@ -3,8 +3,11 @@ import { useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import { MdFileUpload } from 'react-icons/md';
 import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useState } from 'react';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const statusMeta = {
     pending: { label: 'Pending review', className: 'bg-amber-100 text-amber-900' },
@@ -15,7 +18,40 @@ const statusMeta = {
 const Blog = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
+    const [blogImage, setBlogImage] = useState('');
+    const [uploadingImage, setUploadingImage] = useState(false);
     const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm();
+
+    const handleImageUpload = () => {
+        if (!window.cloudinary) {
+            toast.error('Cloudinary widget is not loaded!');
+            return;
+        }
+
+        setUploadingImage(true);
+        window.cloudinary.openUploadWidget(
+            {
+                cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+                uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+                sources: ['local', 'url', 'camera'],
+                multiple: false,
+                resourceType: 'image',
+                cropping: false,
+                folder: 'rewaz-blogs'
+            },
+            (error, result) => {
+                setUploadingImage(false);
+
+                if (!error && result.event === 'success') {
+                    setBlogImage(result.info.secure_url);
+                    toast.success('Blog photo uploaded!');
+                } else if (error) {
+                    console.error(error);
+                    toast.error('Blog photo upload failed!');
+                }
+            }
+        );
+    };
 
     const { data: myBlogs = [], refetch, isLoading } = useQuery({
         queryKey: ['my-blogs', user?.email],
@@ -35,6 +71,7 @@ const Blog = () => {
                 category: data?.category,
                 excerpt: data?.excerpt,
                 content: data?.content,
+                blogImage,
                 authorId: user?.uid,
                 authorName: user?.displayName || user?.email,
                 authorPhoto: user?.photoURL || ''
@@ -45,6 +82,7 @@ const Blog = () => {
             if (response?.data?.insertedId) {
                 toast.success('Blog submitted. It is now waiting for admin approval.');
                 reset();
+                setBlogImage('');
                 refetch();
             }
         } catch (error) {
@@ -88,6 +126,26 @@ const Blog = () => {
                             <textarea {...register('content', { required: true })} className='textarea textarea-bordered soft-textarea min-h-72 w-full text-stone-900' placeholder='Write the full blog post here...' required />
                         </label>
 
+                        <div className='grid gap-3 rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-4'>
+                            <div className='flex flex-wrap items-center justify-between gap-3'>
+                                <div>
+                                    <span className='text-sm font-medium text-stone-700'>Blog photo</span>
+                                    <p className='text-xs text-stone-500'>Upload a cover image for the blog post.</p>
+                                </div>
+                                <button type='button' onClick={handleImageUpload} className='btn btn-sm border-[#E97451] text-[#E97451] hover:bg-[#E97451] hover:text-white' disabled={uploadingImage}>
+                                    <MdFileUpload /> {uploadingImage ? 'Uploading...' : blogImage ? 'Change Photo' : 'Upload Photo'}
+                                </button>
+                            </div>
+
+                            {blogImage ? (
+                                <div className='overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm'>
+                                    <img src={blogImage} alt='Blog cover preview' className='h-56 w-full object-cover' />
+                                </div>
+                            ) : (
+                                <div className='rounded-2xl border border-stone-200 bg-white px-4 py-6 text-sm text-stone-500'>No blog photo uploaded yet.</div>
+                            )}
+                        </div>
+
                         <div className='flex flex-wrap items-center justify-between gap-3 border-t border-stone-200 pt-4'>
                             <p className='text-sm text-stone-500'>Posts are reviewed by admins before they appear on the public site.</p>
                             <button type='submit' className='btn brand-button' disabled={isSubmitting}>
@@ -128,13 +186,14 @@ const Blog = () => {
 
                         <div className='mt-5 space-y-4'>
                             {isLoading ? (
-                                <p className='text-sm text-stone-500'>Loading your submissions...</p>
+                                <DashboardLoading title='Loading your submissions' subtitle='Fetching your latest blog drafts and status…' lines={1} />
                             ) : myBlogs.length > 0 ? (
                                 myBlogs.slice(0, 3).map((blog) => {
                                     const meta = statusMeta[blog?.status] || statusMeta.pending;
 
                                     return (
                                         <article key={blog?._id} className='rounded-2xl border border-stone-200 bg-gradient-to-br from-stone-50 to-white p-4 shadow-sm transition-transform hover:-translate-y-0.5'>
+                                            {blog?.blogImage ? <img src={blog.blogImage} alt={blog?.title || 'Blog'} className='mb-4 h-40 w-full rounded-xl object-cover' /> : null}
                                             <div className='flex items-start justify-between gap-3'>
                                                 <div className='min-w-0'>
                                                     <h3 className='font-semibold text-stone-900'>{blog?.title}</h3>

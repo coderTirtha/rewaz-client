@@ -1,101 +1,107 @@
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
-import app from "../firebase/firebase.config";
 import { createContext, useEffect, useRef, useState } from "react";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import queryClient from "../queryClient";
 
 export const AuthContext = createContext(null);
-const auth = getAuth(app);
+
+const normalizeUser = (user) => {
+    if (!user) {
+        return null;
+    }
+
+    return {
+        ...user,
+        uid: user?.userId || user?.uid || user?.id || null,
+        displayName: user?.name || user?.displayName || '',
+        photoURL: user?.photoURL || user?.photo || '',
+    };
+};
+
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const axiosPublic = useAxiosPublic();
-    const syncSessionPromiseRef = useRef(null);
-    const lastSyncedEmailRef = useRef(null);
     const previousAuthEmailRef = useRef(null);
 
-    const syncSession = (currentUser) => {
-        if (!currentUser?.email) {
-            return Promise.resolve();
+    const refreshSession = async () => {
+        try {
+            const response = await axiosPublic.get('/auth/me', { withCredentials: true });
+            return normalizeUser(response?.data?.user);
         }
-
-        if (lastSyncedEmailRef.current === currentUser.email) {
-            return Promise.resolve();
+        catch (error) {
+            return null;
         }
-
-        if (!syncSessionPromiseRef.current) {
-            syncSessionPromiseRef.current = axiosPublic
-                .post('/jwt', { email: currentUser.email }, { withCredentials: true })
-                .then((response) => {
-                    lastSyncedEmailRef.current = currentUser.email;
-                    return response;
-                })
-                .finally(() => {
-                    syncSessionPromiseRef.current = null;
-                });
-        }
-
-        return syncSessionPromiseRef.current;
     };
 
     const login = (email, password) => {
         setLoading(true);
-        return signInWithEmailAndPassword(auth, email, password).then(async (result) => {
-            await syncSession(result?.user);
-            return result;
+        return axiosPublic.post('/auth/login', { email, password }, { withCredentials: true }).then((response) => {
+            const nextUser = normalizeUser(response?.data?.user);
+            setUser(nextUser);
+            queryClient.clear();
+            return { user: nextUser };
+        }).finally(() => {
+            setLoading(false);
         });
     }
-    const createUser = (email, password) => {
+    const createUser = (userData) => {
         setLoading(true);
-        return createUserWithEmailAndPassword(auth, email, password).then(async (result) => {
-            await syncSession(result?.user);
-            return result;
+        return axiosPublic.post('/auth/register', userData, { withCredentials: true }).then((response) => {
+            const nextUser = normalizeUser(response?.data?.user);
+            setUser(nextUser);
+            queryClient.clear();
+            return { user: nextUser };
+        }).finally(() => {
+            setLoading(false);
         });
     }
     const updateUser = (name, photo) => {
-        // setLoading(true);
-        return updateProfile(auth.currentUser, {
-            displayName: name,
+        return axiosPublic.patch('/auth/profile', {
+            name,
             photoURL: photo
+        }, { withCredentials: true }).then((response) => {
+            const nextUser = normalizeUser(response?.data?.user);
+            setUser(nextUser);
+            return nextUser;
         });
     }
     const logOut = () => {
         setLoading(true);
-        lastSyncedEmailRef.current = null;
         previousAuthEmailRef.current = null;
         queryClient.clear();
-        return signOut(auth);
+        setUser(null);
+        return axiosPublic.post('/auth/logout', {}, { withCredentials: true }).finally(() => {
+            setLoading(false);
+        });
     }
     useEffect(() => {
-        const unSubscribe = onAuthStateChanged(auth, async currentUser => {
-            const nextEmail = currentUser?.email || null;
-            const previousEmail = previousAuthEmailRef.current;
+        let isMounted = true;
 
-            if (previousEmail !== nextEmail) {
-                queryClient.clear();
-            }
-
-            previousAuthEmailRef.current = nextEmail;
-            setUser(currentUser);
-            try {
-                if (currentUser?.email) {
-                    await syncSession(currentUser);
+        refreshSession()
+            .then((currentUser) => {
+                if (!isMounted) {
+                    return;
                 }
-                else {
-                    await axiosPublic.post('/logout', {}, { withCredentials: true });
+
+                const nextEmail = currentUser?.email || null;
+                const previousEmail = previousAuthEmailRef.current;
+
+                if (previousEmail !== nextEmail) {
                     queryClient.clear();
                 }
-            }
-            catch (error) {
-                console.error(error);
-            }
-            finally {
-                setLoading(false);
-            }
-        });
+
+                previousAuthEmailRef.current = nextEmail;
+                setUser(currentUser);
+            })
+            .finally(() => {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            });
+
         return () => {
-            unSubscribe();
-        }
+            isMounted = false;
+        };
     }, [axiosPublic]);
     const authInfo = {
         user,

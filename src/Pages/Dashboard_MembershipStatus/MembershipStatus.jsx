@@ -7,6 +7,7 @@ import { FiClock, FiCreditCard, FiMapPin, FiPhone, FiUser } from 'react-icons/fi
 import { MdVerifiedUser } from 'react-icons/md';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const MembershipStatus = () => {
     const axiosSecure = useAxiosSecure();
@@ -27,6 +28,10 @@ const MembershipStatus = () => {
         : membershipStatus === 'pending'
             ? 'bg-amber-100 text-amber-900'
             : 'bg-stone-100 text-stone-700';
+
+    if (isLoading) {
+        return <DashboardLoading title='Loading membership status' subtitle='Checking your application and payment history…' lines={2} />;
+    }
 
     return (
         <div className='mx-auto my-12 max-w-5xl space-y-6 px-4'>

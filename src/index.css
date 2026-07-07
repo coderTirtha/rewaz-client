@@ -6,6 +6,8 @@
     --rewaz-orange-deep: #D26B2E;
     --rewaz-dark: #1C1C1C;
     --rewaz-cream: #fff8f4;
+    --rewaz-skeleton-base: rgba(255, 255, 255, 0.72);
+    --rewaz-skeleton-highlight: rgba(255, 255, 255, 0.96);
 }
 
 html {
@@ -95,6 +97,81 @@ img {
 
 .brand-divider {
     @apply h-px w-full bg-gradient-to-r from-transparent via-[#E97451]/35 to-transparent;
+}
+
+@keyframes rewaz-shimmer {
+    0% {
+        background-position: -120% 0;
+    }
+    100% {
+        background-position: 120% 0;
+    }
+}
+
+@keyframes rewaz-float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes rewaz-page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rewaz-skeleton {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, var(--rewaz-skeleton-base) 0%, var(--rewaz-skeleton-highlight) 50%, var(--rewaz-skeleton-base) 100%);
+    background-size: 240% 100%;
+    animation: rewaz-shimmer 1.35s ease-in-out infinite;
+}
+
+.rewaz-float {
+    animation: rewaz-float 3.2s ease-in-out infinite;
+}
+
+.rewaz-dots {
+    position: relative;
+}
+
+.rewaz-dots::before,
+.rewaz-dots::after {
+    content: "";
+    position: absolute;
+    inset: auto;
+    border-radius: 9999px;
+    background: rgba(233, 116, 81, 0.18);
+    filter: blur(2px);
+}
+
+.rewaz-dots::before {
+    width: 10px;
+    height: 10px;
+    top: -8px;
+    left: 8px;
+    animation: rewaz-float 2.8s ease-in-out infinite;
+}
+
+.rewaz-dots::after {
+    width: 14px;
+    height: 14px;
+    right: 10px;
+    bottom: -10px;
+    animation: rewaz-float 3.6s ease-in-out infinite reverse;
+}
+
+.rewaz-page-enter {
+    animation: rewaz-page-enter 280ms ease-out both;
 }
 
 /* No night-mode overrides — theme switching removed. */

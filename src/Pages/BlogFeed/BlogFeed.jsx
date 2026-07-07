@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FiBookOpen, FiCalendar, FiSearch, FiUser } from 'react-icons/fi';
 import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const BlogFeed = () => {
     const { user } = useAuth();
@@ -96,7 +97,7 @@ const BlogFeed = () => {
                 </section>
 
                 {isLoading ? (
-                    <div className='rounded-2xl border border-stone-200 bg-white p-10 text-center shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>Loading blog feed...</div>
+                    <DashboardLoading title='Loading blog feed' subtitle='Fetching recent stories and activity…' lines={2} />
                 ) : isError ? (
                     <div className='rounded-2xl border border-rose-200 bg-rose-50 p-10 text-center text-rose-700 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>
                         Unable to load the blog feed right now.
@@ -105,6 +106,7 @@ const BlogFeed = () => {
                     <div className='grid gap-5 lg:grid-cols-2'>
                         {filteredBlogs.map((blog) => (
                             <article key={blog?._id} className='brand-surface overflow-hidden transition-transform hover:-translate-y-1'>
+                                {blog?.blogImage ? <img src={blog.blogImage} alt={blog?.title || 'Blog'} className='h-56 w-full object-cover' /> : null}
                                 <div className='brand-banner px-6 py-5 text-white'>
                                     <div className='flex flex-wrap items-center justify-between gap-3'>
                                         <span className='brand-chip border-white/15 bg-white/10 text-white'>{blog?.category || 'Uncategorized'}</span>

@@ -5,10 +5,11 @@ import memberPhoto from '/images/member.png';
 import usersPhoto from '/images/users.png';
 import studentPhoto from '/images/student.png';
 import { RiDashboard3Line } from 'react-icons/ri';
-import { FiEye, FiThumbsUp, FiMessageCircle, FiClock } from 'react-icons/fi';
+import { FiEye, FiThumbsUp, FiMessageCircle, FiClock, FiInfo } from 'react-icons/fi';
 import useAuth from '../../hooks/useAuth';
 import useAdmin from '../../hooks/useAdmin';
 import { Link } from 'react-router-dom';
+import DashboardLoading from '../../Shared/DashboardLoading';
 
 const Overview = () => {
     const axiosSecure = useAxiosSecure();
@@ -17,8 +18,12 @@ const Overview = () => {
     const [users, setUsers] = useState(null);
     const [members, setMembers] = useState(null);
     const [students, setStudents] = useState(null);
+    const [rawUsers, setRawUsers] = useState(null);
+    const [rawMembers, setRawMembers] = useState(null);
+    const [rawStudents, setRawStudents] = useState(null);
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [overlaps, setOverlaps] = useState({ memberUser: 0, memberStudent: 0, userStudent: 0, allThree: 0 });
 
     useEffect(() => {
         let active = true;
@@ -39,6 +44,11 @@ const Overview = () => {
                     const usersList = usersResponse?.data || [];
                     const membersList = membersResponse?.data || [];
                     const studentsList = studentsResponse?.data || [];
+
+                    // raw totals (counts before deduplication)
+                    setRawUsers(usersList.length);
+                    setRawMembers(membersList.length);
+                    setRawStudents(studentsList.length);
 
                     // Helper to normalize phone/email
                     const normalizeEmail = (e) => e ? String(e).trim().toLowerCase() : null;
@@ -91,15 +101,31 @@ const Overview = () => {
 
                     // Compute exclusive counts by priority: member > student > user
                     let usersCount = 0, membersCount = 0, studentsCount = 0;
+                    let memberUser = 0, memberStudent = 0, userStudent = 0, allThree = 0;
                     for (const [, p] of persons) {
-                        if (p.roles.has('member')) membersCount += 1;
-                        else if (p.roles.has('student')) studentsCount += 1;
-                        else if (p.roles.has('user')) usersCount += 1;
+                        const r = p.roles;
+                        if (r.size === 3) {
+                            allThree += 1;
+                        } else if (r.has('member') && r.has('user')) {
+                            memberUser += 1;
+                        } else if (r.has('member') && r.has('student')) {
+                            memberStudent += 1;
+                        } else if (r.has('user') && r.has('student')) {
+                            userStudent += 1;
+                        } else if (r.has('member')) {
+                            membersCount += 1;
+                        } else if (r.has('student')) {
+                            studentsCount += 1;
+                        } else if (r.has('user')) {
+                            usersCount += 1;
+                        }
                     }
 
+                    // include exclusive counts plus overlaps as separate indicators
                     setUsers(usersCount);
                     setMembers(membersCount);
                     setStudents(studentsCount);
+                    setOverlaps({ memberUser, memberStudent, userStudent, allThree });
                     setBlogs(blogsResponse?.data || []);
                 } else {
                     const response = await axiosSecure.get('/blogs/me', { withCredentials: true });
@@ -203,22 +229,22 @@ const Overview = () => {
                                         <p className='mt-2 max-w-2xl text-sm text-white/75'>A quick snapshot of people, student registrations, and blog moderation status across the system.</p>
                                     </div>
                                     <div className='grid grid-cols-2 gap-3 text-sm md:grid-cols-4'>
-                                        <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Users <span className='block text-2xl font-bold'>{users}</span></div>
-                                        <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Members <span className='block text-2xl font-bold'>{members}</span></div>
-                                        <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Students <span className='block text-2xl font-bold'>{students}</span></div>
+                                        <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Users <span className='block text-2xl font-bold'>{rawUsers ?? users}</span></div>
+                                        <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Members <span className='block text-2xl font-bold'>{rawMembers ?? members}</span></div>
+                                        <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Students <span className='block text-2xl font-bold'>{rawStudents ?? students}</span></div>
                                         <div className='rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur'>Blogs <span className='block text-2xl font-bold'>{adminBlogSummary.total}</span></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className='grid gap-4 md:grid-cols-3'>
+                            <div className='grid gap-4 md:grid-cols-3 items-stretch'>
                                 {[
-                                    { label: 'Total Users', value: users, image: usersPhoto, accent: 'border-pink-900' },
-                                    { label: 'Total Members', value: members, image: memberPhoto, accent: 'border-red-400' },
-                                    { label: 'Total Students', value: students, image: studentPhoto, accent: 'border-blue-400' },
+                                    { label: 'Total Users', value: rawUsers ?? users, image: usersPhoto, accent: 'border-pink-900' },
+                                    { label: 'Total Members', value: rawMembers ?? members, image: memberPhoto, accent: 'border-red-400' },
+                                    { label: 'Total Students', value: rawStudents ?? students, image: studentPhoto, accent: 'border-blue-400' },
                                 ].map((item) => (
-                                    <div key={item.label} className={`rounded-2xl border-l-4 ${item.accent} bg-gradient-to-br from-white to-stone-50 p-6 shadow-sm flex justify-center items-center`}>
-                                        <div className='w-full'>
+                                    <div key={item.label} className={`rounded-2xl border-l-4 ${item.accent} bg-gradient-to-br from-white to-stone-50 p-6 shadow-sm flex justify-center items-center h-full`}>
+                                        <div className='w-full flex flex-col justify-between h-full'>
                                             <div className='flex justify-between items-center'>
                                                 <div>
                                                     <h1 className='text-5xl font-bold text-[#E97451]'>{item.value}</h1>
@@ -234,8 +260,8 @@ const Overview = () => {
                                 ))}
                             </div>
 
-                            <div className='grid gap-6 lg:grid-cols-[1.1fr_0.9fr]'>
-                                <div className='rounded-3xl border border-stone-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>
+                            <div className='grid gap-6 lg:grid-cols-[1.1fr_0.9fr] items-stretch'>
+                                <div className='rounded-3xl border border-stone-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.08)] h-full flex flex-col justify-between'>
                                     <div className='flex flex-wrap items-end justify-between gap-3'>
                                         <div>
                                             <h3 className='text-lg font-semibold text-stone-900'>People mix</h3>
@@ -258,10 +284,24 @@ const Overview = () => {
                                                 </div>
                                             );
                                         })}
+                                        <div className='mt-3 border-t pt-3'>
+                                            <div className='flex items-center gap-3 text-sm text-stone-600'>
+                                                <div className='flex gap-2 items-center'>
+                                                    <span className='font-medium'>Overlaps</span>
+                                                    <FiInfo className='text-stone-400' title={'Overlaps are counted when the same person appears in multiple collections. Matching uses email (preferred), then phone, then studentId. Primary role priority for display is Member > Student > User.'} />
+                                                </div>
+                                                <div className='ml-auto flex gap-3'>
+                                                    <span className='inline-flex items-center gap-2 rounded-full bg-stone-50 px-3 py-1 text-xs'>Member+User: <strong className='ml-1'>{overlaps.memberUser}</strong></span>
+                                                    <span className='inline-flex items-center gap-2 rounded-full bg-stone-50 px-3 py-1 text-xs'>Member+Student: <strong className='ml-1'>{overlaps.memberStudent}</strong></span>
+                                                    <span className='inline-flex items-center gap-2 rounded-full bg-stone-50 px-3 py-1 text-xs'>User+Student: <strong className='ml-1'>{overlaps.userStudent}</strong></span>
+                                                    <span className='inline-flex items-center gap-2 rounded-full bg-stone-50 px-3 py-1 text-xs'>All three: <strong className='ml-1'>{overlaps.allThree}</strong></span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className='rounded-3xl border border-stone-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>
+                                <div className='rounded-3xl border border-stone-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.08)] h-full flex flex-col justify-between'>
                                     <div className='flex flex-wrap items-end justify-between gap-3'>
                                         <div>
                                             <h3 className='text-lg font-semibold text-stone-900'>Blog moderation</h3>
@@ -302,8 +342,8 @@ const Overview = () => {
                                 </div>
                             </div>
 
-                            <div className='grid gap-6 lg:grid-cols-[0.95fr_1.05fr]'>
-                                <div className='rounded-3xl border border-stone-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.08)]'>
+                            <div className='grid gap-6 lg:grid-cols-[0.95fr_1.05fr] items-stretch'>
+                                <div className='rounded-3xl border border-stone-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.08)] h-full flex flex-col justify-between'>
                                     <h3 className='text-lg font-semibold text-stone-900'>Blog status split</h3>
                                     <div className='mt-5 space-y-4'>
                                         {blogMix.map((item) => {
@@ -485,9 +525,7 @@ const Overview = () => {
                         </div>
                     )}
                 </div> : <>
-                    <div className='min-h-screen flex justify-center items-center'>
-                        <p>Loading...</p>
-                    </div>
+                    <DashboardLoading title='Loading your dashboard' subtitle='Fetching counts, activity, and recent posts…' variant='progress' />
                 </>
             }
             <ToastContainer />
